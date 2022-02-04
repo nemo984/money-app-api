@@ -10,14 +10,15 @@ import (
 
 const createExpense = `-- name: CreateExpense :one
 INSERT INTO expenses (
-  category_id, amount, frequency, note
+  user_id, category_id, amount, frequency, note
 ) VALUES (
-  $1, $2, $3, $4
+  $1, $2, $3, $4, $5
 )
 RETURNING expense_id, category_id, amount, created_at, frequency, note, user_id
 `
 
 type CreateExpenseParams struct {
+	UserID     int32          `json:"user_id"`
 	CategoryID int32          `json:"category_id"`
 	Amount     string         `json:"amount"`
 	Frequency  DateFrequency  `json:"frequency"`
@@ -26,6 +27,7 @@ type CreateExpenseParams struct {
 
 func (q *Queries) CreateExpense(ctx context.Context, arg CreateExpenseParams) (Expense, error) {
 	row := q.db.QueryRowContext(ctx, createExpense,
+		arg.UserID,
 		arg.CategoryID,
 		arg.Amount,
 		arg.Frequency,

@@ -58,8 +58,8 @@ type Budget struct {
 }
 
 type Category struct {
-	CategoryID int32  `json:"category_id"`
-	Name       string `json:"name"`
+	ID   int32          `json:"id"`
+	Name sql.NullString `json:"name"`
 }
 
 type Expense struct {
@@ -83,8 +83,7 @@ type Income struct {
 }
 
 type IncomesType struct {
-	IncomeTypeID int32  `json:"income_type_id"`
-	Type         string `json:"type"`
+	Type string `json:"type"`
 }
 
 type Notification struct {

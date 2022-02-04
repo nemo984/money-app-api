@@ -21,14 +21,14 @@ CREATE TABLE "users" (
 );
 
 CREATE TABLE "categories" (
-  "category_id" serial PRIMARY KEY,
-  "name" varchar NOT NULL
+  "id" serial PRIMARY KEY,
+  "name" varchar(15) UNIQUE
 );
 
 CREATE TABLE "expenses" (
   "expense_id" serial PRIMARY KEY,
   "category_id" int NOT NULL,
-  "amount" money NOT NULL,
+  "amount" numeric(14,2) NOT NULL,
   "created_at" timestamptz DEFAULT (now()),
   "frequency" date_frequency,
   "note" varchar,
@@ -39,15 +39,14 @@ CREATE TABLE "incomes" (
   "income_id" serial PRIMARY KEY,
   "income_type_id" varchar NOT NULL,
   "description" varchar,
-  "amount" money NOT NULL,
+  "amount" numeric(14,2) NOT NULL,
   "created_at" timestamptz DEFAULT (now()),
   "frequency" date_frequency,
   "user_id" int NOT NULL
 );
 
 CREATE TABLE "incomes_types" (
-  "income_type_id" serial PRIMARY KEY,
-  "type" varchar NOT NULL
+  "type" varchar PRIMARY KEY
 );
 
 CREATE TABLE "budgets" (
@@ -90,3 +89,6 @@ CREATE INDEX "Date" ON "expenses" ("created_at");
 CREATE INDEX "Date" ON "incomes" ("created_at");
 
 CREATE INDEX "Date" ON "notifications" ("created_at");
+
+INSERT INTO categories (name) VALUES ('Transportation');
+INSERT INTO categories (name) VALUES ('Food');
