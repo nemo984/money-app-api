@@ -19,7 +19,7 @@ RETURNING expense_id, category_id, amount, created_at, frequency, note, user_id
 
 type CreateExpenseParams struct {
 	CategoryID int32          `json:"category_id"`
-	Amount     interface{}    `json:"amount"`
+	Amount     string         `json:"amount"`
 	Frequency  DateFrequency  `json:"frequency"`
 	Note       sql.NullString `json:"note"`
 }

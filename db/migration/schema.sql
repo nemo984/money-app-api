@@ -28,7 +28,7 @@ CREATE TABLE "categories" (
 CREATE TABLE "expenses" (
   "expense_id" serial PRIMARY KEY,
   "category_id" int NOT NULL,
-  "amount" double NOT NULL,
+  "amount" money NOT NULL,
   "created_at" timestamptz DEFAULT (now()),
   "frequency" date_frequency,
   "note" varchar,
@@ -39,7 +39,7 @@ CREATE TABLE "incomes" (
   "income_id" serial PRIMARY KEY,
   "income_type_id" varchar NOT NULL,
   "description" varchar,
-  "amount" double NOT NULL,
+  "amount" money NOT NULL,
   "created_at" timestamptz DEFAULT (now()),
   "frequency" date_frequency,
   "user_id" int NOT NULL
@@ -53,7 +53,7 @@ CREATE TABLE "incomes_types" (
 CREATE TABLE "budgets" (
   "budget_id" serial PRIMARY KEY,
   "category_id" int,
-  "percentage" double NOT NULL,
+  "percentage" int NOT NULL,
   "start_date" timestamptz DEFAULT (now()),
   "end_date" timestamptz,
   "user_id" int NOT NULL
@@ -64,7 +64,7 @@ CREATE TABLE "notifications" (
   "user_id" int NOT NULL,
   "description" text,
   "type" varchar NOT NULL,
-  "priority" notification_priority DEFAULT 'average',
+  "priority" notification_priority DEFAULT 'medium',
   "read" boolean DEFAULT false,
   "created_at" timestamptz DEFAULT (now())
 );

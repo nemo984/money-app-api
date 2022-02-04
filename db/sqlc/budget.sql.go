@@ -20,7 +20,7 @@ RETURNING budget_id, category_id, percentage, start_date, end_date, user_id
 type CreateBudgetParams struct {
 	UserID     int32         `json:"user_id"`
 	CategoryID sql.NullInt32 `json:"category_id"`
-	Percentage interface{}   `json:"percentage"`
+	Percentage int32         `json:"percentage"`
 	EndDate    sql.NullTime  `json:"end_date"`
 }
 
@@ -99,7 +99,7 @@ WHERE user_id = $1
 type UpdateBudgetParams struct {
 	UserID     int32         `json:"user_id"`
 	CategoryID sql.NullInt32 `json:"category_id"`
-	Percentage interface{}   `json:"percentage"`
+	Percentage int32         `json:"percentage"`
 	EndDate    sql.NullTime  `json:"end_date"`
 }
 
