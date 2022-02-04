@@ -24,7 +24,7 @@ type Querier interface {
 	GetUser(ctx context.Context, username string) (User, error)
 	UpdateBudget(ctx context.Context, arg UpdateBudgetParams) error
 	UpdateNotification(ctx context.Context, arg UpdateNotificationParams) error
-	UpdateUser(ctx context.Context, arg UpdateUserParams) error
+	UpdateUser(ctx context.Context, arg UpdateUserParams) (User, error)
 }
 
 var _ Querier = (*Queries)(nil)

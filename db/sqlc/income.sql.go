@@ -21,7 +21,7 @@ type CreateIncomeParams struct {
 	UserID       int32          `json:"user_id"`
 	IncomeTypeID string         `json:"income_type_id"`
 	Description  sql.NullString `json:"description"`
-	Amount       interface{}    `json:"amount"`
+	Amount       string         `json:"amount"`
 	Frequency    DateFrequency  `json:"frequency"`
 }
 

@@ -76,7 +76,7 @@ type Income struct {
 	IncomeID     int32          `json:"income_id"`
 	IncomeTypeID string         `json:"income_type_id"`
 	Description  sql.NullString `json:"description"`
-	Amount       interface{}    `json:"amount"`
+	Amount       string         `json:"amount"`
 	CreatedAt    sql.NullTime   `json:"created_at"`
 	Frequency    DateFrequency  `json:"frequency"`
 	UserID       int32          `json:"user_id"`

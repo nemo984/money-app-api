@@ -10,12 +10,14 @@ INSERT INTO users (
 )
 RETURNING *;
 
--- name: UpdateUser :exec
+-- name: UpdateUser :one
 UPDATE users 
-SET name = $2,
-    password = $3,
-    profile_url = $4
-WHERE username = $1;
+SET username = $2,
+    name = $3,
+    password = $4,
+    profile_url = $5
+WHERE user_id = $1
+RETURNING *;
 
 -- name: DeleteUser :exec
 DELETE FROM users

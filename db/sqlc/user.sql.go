@@ -72,27 +72,40 @@ func (q *Queries) GetUser(ctx context.Context, username string) (User, error) {
 	return i, err
 }
 
-const updateUser = `-- name: UpdateUser :exec
+const updateUser = `-- name: UpdateUser :one
 UPDATE users 
-SET name = $2,
-    password = $3,
-    profile_url = $4
-WHERE username = $1
+SET username = $2,
+    name = $3,
+    password = $4,
+    profile_url = $5
+WHERE user_id = $1
+RETURNING user_id, username, name, password, profile_url, created_at
 `
 
 type UpdateUserParams struct {
+	UserID     int32          `json:"user_id"`
 	Username   string         `json:"username"`
 	Name       sql.NullString `json:"name"`
 	Password   string         `json:"password"`
 	ProfileUrl sql.NullString `json:"profile_url"`
 }
 
-func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) error {
-	_, err := q.db.ExecContext(ctx, updateUser,
+func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) (User, error) {
+	row := q.db.QueryRowContext(ctx, updateUser,
+		arg.UserID,
 		arg.Username,
 		arg.Name,
 		arg.Password,
 		arg.ProfileUrl,
 	)
-	return err
+	var i User
+	err := row.Scan(
+		&i.UserID,
+		&i.Username,
+		&i.Name,
+		&i.Password,
+		&i.ProfileUrl,
+		&i.CreatedAt,
+	)
+	return i, err
 }
