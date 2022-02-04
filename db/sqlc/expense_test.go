@@ -12,8 +12,8 @@ import (
 )
 
 //TODO: .
-func randomCategory() int32 {
-	return 1
+func randomCategory() string {
+	return "Transportation";
 }
 
 var date = [...]DateFrequency {DateFrequencyDay, DateFrequencyMonth, DateFrequencyWeek, DateFrequencyYear}
@@ -25,7 +25,7 @@ func randomFrequency() DateFrequency {
 func createRandomExpense(t *testing.T, userID int32) Expense {
 	arg := CreateExpenseParams{
 		UserID: userID,
-		CategoryID: randomCategory(),
+		CategoryName: randomCategory(),
 		Amount:  fmt.Sprint(util.RandomInt(100,20000)),
 		Frequency: randomFrequency(),
 		Note: sql.NullString{
@@ -39,7 +39,7 @@ func createRandomExpense(t *testing.T, userID int32) Expense {
 	require.NotEmpty(t, expense)
 	
 	require.Equal(t, arg.UserID, expense.UserID)
-	require.Equal(t, arg.CategoryID, expense.CategoryID)
+	require.Equal(t, arg.CategoryName, expense.CategoryName)
 	argAmount, err := strconv.Atoi(arg.Amount)
 	require.NoError(t, err)
 	expAmount, err := strconv.ParseFloat(expense.Amount, 64)

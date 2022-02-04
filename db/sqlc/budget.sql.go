@@ -10,31 +10,31 @@ import (
 
 const createBudget = `-- name: CreateBudget :one
 INSERT INTO budgets (
-  category_id, percentage, end_date, user_id
+  category_name, percentage, end_date, user_id
 ) VALUES (
   $2, $3, $4, $1
 )
-RETURNING budget_id, category_id, percentage, start_date, end_date, user_id
+RETURNING budget_id, category_name, percentage, start_date, end_date, user_id
 `
 
 type CreateBudgetParams struct {
-	UserID     int32         `json:"user_id"`
-	CategoryID sql.NullInt32 `json:"category_id"`
-	Percentage int32         `json:"percentage"`
-	EndDate    sql.NullTime  `json:"end_date"`
+	UserID       int32         `json:"user_id"`
+	CategoryName sql.NullInt32 `json:"category_name"`
+	Percentage   interface{}   `json:"percentage"`
+	EndDate      sql.NullTime  `json:"end_date"`
 }
 
 func (q *Queries) CreateBudget(ctx context.Context, arg CreateBudgetParams) (Budget, error) {
 	row := q.db.QueryRowContext(ctx, createBudget,
 		arg.UserID,
-		arg.CategoryID,
+		arg.CategoryName,
 		arg.Percentage,
 		arg.EndDate,
 	)
 	var i Budget
 	err := row.Scan(
 		&i.BudgetID,
-		&i.CategoryID,
+		&i.CategoryName,
 		&i.Percentage,
 		&i.StartDate,
 		&i.EndDate,
@@ -54,7 +54,7 @@ func (q *Queries) DeleteBudget(ctx context.Context, userID int32) error {
 }
 
 const getBudgets = `-- name: GetBudgets :many
-SELECT budget_id, category_id, percentage, start_date, end_date, user_id FROM budgets
+SELECT budget_id, category_name, percentage, start_date, end_date, user_id FROM budgets
 WHERE user_id = $1
 `
 
@@ -69,7 +69,7 @@ func (q *Queries) GetBudgets(ctx context.Context, userID int32) ([]Budget, error
 		var i Budget
 		if err := rows.Scan(
 			&i.BudgetID,
-			&i.CategoryID,
+			&i.CategoryName,
 			&i.Percentage,
 			&i.StartDate,
 			&i.EndDate,
@@ -90,23 +90,23 @@ func (q *Queries) GetBudgets(ctx context.Context, userID int32) ([]Budget, error
 
 const updateBudget = `-- name: UpdateBudget :exec
 UPDATE budgets
-SET category_id = $2,
+SET category_name = $2,
     percentage = $3,
     end_date = $4
 WHERE user_id = $1
 `
 
 type UpdateBudgetParams struct {
-	UserID     int32         `json:"user_id"`
-	CategoryID sql.NullInt32 `json:"category_id"`
-	Percentage int32         `json:"percentage"`
-	EndDate    sql.NullTime  `json:"end_date"`
+	UserID       int32         `json:"user_id"`
+	CategoryName sql.NullInt32 `json:"category_name"`
+	Percentage   interface{}   `json:"percentage"`
+	EndDate      sql.NullTime  `json:"end_date"`
 }
 
 func (q *Queries) UpdateBudget(ctx context.Context, arg UpdateBudgetParams) error {
 	_, err := q.db.ExecContext(ctx, updateBudget,
 		arg.UserID,
-		arg.CategoryID,
+		arg.CategoryName,
 		arg.Percentage,
 		arg.EndDate,
 	)
