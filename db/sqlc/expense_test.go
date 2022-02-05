@@ -55,6 +55,25 @@ func TestCreateExpense(t *testing.T) {
 	createRandomExpense(t, user.UserID)
 }
 
+func TestGetExpenses(t *testing.T) {
+	user := createRandomUser(t)
+	var expenses []Expense
+	n := 5
+	for i := 0; i < n; i++ {
+		expense := createRandomExpense(t, user.UserID)
+		expenses = append(expenses, expense)
+	}
+	e2, err := testQueries.GetExpenses(context.Background(), user.UserID)
+	require.NoError(t, err)
+	require.Equal(t, n, len(e2))
+	for i := 0; i < n; i++ {
+		require.Equal(t, expenses[i].UserID, e2[i].UserID)
+		require.Equal(t, expenses[i].CategoryName, e2[i].CategoryName)
+		require.Equal(t, expenses[i].Frequency, e2[i].Frequency)
+		require.Equal(t, expenses[i].Note, e2[i].Note)
+	}
+}
+
 func TestDeleteExpense(t *testing.T) {
 	user := createRandomUser(t)
 	e := createRandomExpense(t, user.UserID)
@@ -63,9 +82,9 @@ func TestDeleteExpense(t *testing.T) {
 }
 
 func requireAmountEqual(t *testing.T, actual, expected string) {
-	argAmount, err := strconv.Atoi(actual)
+	argAmount, err := strconv.ParseFloat(actual, 64)
 	require.NoError(t, err)
 	expAmount, err := strconv.ParseFloat(expected, 64)
 	require.NoError(t, err)
-	require.Equal(t, argAmount, int(expAmount))
+	require.Equal(t, int(argAmount), int(expAmount))
 }

@@ -40,7 +40,23 @@ func TestCreateBudget(t *testing.T) {
 	user := createRandomUser(t)
 	createRandomBudget(t, user.UserID)
 }
-
+func TestGetBudgets(t *testing.T) {
+	user := createRandomUser(t)
+	var budgets []Budget
+	n := 5
+	for i := 0; i < n; i++ {
+		budget := createRandomBudget(t, user.UserID)
+		budgets = append(budgets, budget)
+	}
+	b2, err := testQueries.GetBudgets(context.Background(), user.UserID)
+	require.NoError(t, err)
+	require.Equal(t, n, len(b2))
+	for i := 0; i < n; i++ {
+		require.Equal(t, budgets[i].UserID, b2[i].UserID)
+		require.Equal(t, budgets[i].CategoryName, b2[i].CategoryName)
+		requireAmountEqual(t, budgets[i].Amount, b2[i].Amount)
+	}
+}
 func TestDeleteBudget(t *testing.T) {
 	user := createRandomUser(t)
 	i := createRandomBudget(t, user.UserID)

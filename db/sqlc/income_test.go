@@ -46,6 +46,25 @@ func TestCreateIncome(t *testing.T) {
 	createRandomIncome(t, user.UserID)
 }
 
+func TestGetIncomes(t *testing.T) {
+	user := createRandomUser(t)
+	var incomes []Income
+	n := 5
+	for i := 0; i < n; i++ {
+		income := createRandomIncome(t, user.UserID)
+		incomes = append(incomes, income)
+	}
+	i2, err := testQueries.GetIncomes(context.Background(), user.UserID)
+	require.NoError(t, err)
+	require.Equal(t, n, len(i2))
+	for i := 0; i < n; i++ {
+		require.Equal(t, incomes[i].UserID, i2[i].UserID)
+		require.Equal(t, incomes[i].IncomeTypeName, i2[i].IncomeTypeName)
+		require.Equal(t, incomes[i].Description, i2[i].Description)
+		require.Equal(t, incomes[i].Frequency, i2[i].Frequency)
+	}
+}
+
 func TestDeleteIncome(t *testing.T) {
 	user := createRandomUser(t)
 	i := createRandomIncome(t, user.UserID)
