@@ -17,13 +17,13 @@ func randomIncomeType() string {
 
 func createRandomIncome(t *testing.T, userID int32) Income {
 	arg := CreateIncomeParams{
-		UserID: userID,
+		UserID:         userID,
 		IncomeTypeName: randomIncomeType(),
 		Description: sql.NullString{
 			String: util.RandomString(50),
-			Valid: true,	
+			Valid:  true,
 		},
-		Amount: fmt.Sprint(util.RandomInt(20000,40000)),
+		Amount:    fmt.Sprint(util.RandomInt(20000, 40000)),
 		Frequency: DateFrequencyMonth,
 	}
 

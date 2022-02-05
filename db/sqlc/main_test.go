@@ -12,7 +12,7 @@ import (
 var testQueries *Queries
 
 const dbSource = "postgresql://postgres:postgres@localhost:5432/postgres?sslmode=disable"
- 
+
 func TestMain(m *testing.M) {
 	conn, err := sql.Open("postgres", dbSource)
 	if err != nil {

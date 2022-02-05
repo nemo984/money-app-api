@@ -9,11 +9,11 @@ import (
 const random = "abcdefghijklmnopqrstuvwxyz0123456789"
 
 func init() {
-	rand.Seed(time.Now().Unix() )
+	rand.Seed(time.Now().Unix())
 }
 
 func RandomInt(min, max int) int {
-	return min + rand.Intn(max - min + 1)
+	return min + rand.Intn(max-min+1)
 }
 
 func RandomString(n int) string {

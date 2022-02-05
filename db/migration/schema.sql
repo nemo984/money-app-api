@@ -54,7 +54,8 @@ CREATE TABLE "budgets" (
   "amount" numeric(14,2) NOT NULL,
   "start_date" timestamptz DEFAULT (now()),
   "end_date" timestamptz,
-  "user_id" int NOT NULL
+  "user_id" int NOT NULL,
+  "created_at" timestamptz DEFAULT (now())
 );
 
 CREATE TABLE "notifications" (

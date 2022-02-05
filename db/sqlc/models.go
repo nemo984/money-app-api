@@ -49,12 +49,13 @@ func (e *NotificationPriority) Scan(src interface{}) error {
 }
 
 type Budget struct {
-	BudgetID     int32         `json:"budget_id"`
-	CategoryName sql.NullInt32 `json:"category_name"`
-	Percentage   interface{}   `json:"percentage"`
-	StartDate    sql.NullTime  `json:"start_date"`
-	EndDate      sql.NullTime  `json:"end_date"`
-	UserID       int32         `json:"user_id"`
+	BudgetID     int32        `json:"budget_id"`
+	CategoryName string       `json:"category_name"`
+	Amount       string       `json:"amount"`
+	StartDate    sql.NullTime `json:"start_date"`
+	EndDate      sql.NullTime `json:"end_date"`
+	UserID       int32        `json:"user_id"`
+	CreatedAt    sql.NullTime `json:"created_at"`
 }
 
 type Category struct {
