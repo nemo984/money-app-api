@@ -1,50 +1,54 @@
 package db
 
-// import (
-// 	"context"
-// 	"database/sql"
-// 	"fmt"
-// 	"strconv"
-// 	"testing"
+import (
+	"context"
+	"database/sql"
+	"fmt"
+	"testing"
 
-// 	"github.com/nemo984/money-app-api/util"
-// 	"github.com/stretchr/testify/require"
-// )
+	"github.com/nemo984/money-app-api/util"
+	"github.com/stretchr/testify/require"
+)
 
-// func createRandomIncome(t *testing.T, userID int32) Expense {
-// 	arg := CreateIncomeParams{
-// 		UserID: userID,
-// 		IncomeTypeName:
-// 	}
+//TODO:
+func randomIncomeType() string {
+	return "Passive"
+}
 
-// 	expense, err := testQueries.CreateExpense(context.Background(), arg)
-// 	require.NoError(t, err)
-// 	require.NotEmpty(t, expense)
+func createRandomIncome(t *testing.T, userID int32) Income {
+	arg := CreateIncomeParams{
+		UserID: userID,
+		IncomeTypeName: randomIncomeType(),
+		Description: sql.NullString{
+			String: util.RandomString(50),
+			Valid: true,	
+		},
+		Amount: fmt.Sprint(util.RandomInt(20000,40000)),
+		Frequency: DateFrequencyMonth,
+	}
 
-// 	require.Equal(t, arg.UserID, expense.UserID)
-// 	require.Equal(t, arg.CategoryID, expense.CategoryID)
-// 	argAmount, err := strconv.Atoi(arg.Amount)
-// 	require.NoError(t, err)
-// 	expAmount, err := strconv.ParseFloat(expense.Amount, 64)
-// 	require.NoError(t, err)
-// 	require.Equal(t, argAmount, int(expAmount))
-// 	require.Equal(t, arg.Frequency, expense.Frequency)
-// 	require.Equal(t, arg.Note, expense.Note)
+	income, err := testQueries.CreateIncome(context.Background(), arg)
+	require.NoError(t, err)
+	require.NotEmpty(t, income)
 
-// 	require.NotZero(t, expense.ExpenseID)
-// 	require.NotZero(t, expense.CreatedAt)
+	require.Equal(t, arg.UserID, income.UserID)
+	require.Equal(t, arg.IncomeTypeName, income.IncomeTypeName)
+	require.Equal(t, arg.Description, income.Description)
+	require.Equal(t, arg.Frequency, income.Frequency)
 
-// 	return expense
-// }
+	require.NotZero(t, income.CreatedAt)
 
-// func TestCreateExpense(t *testing.T) {
-// 	user := createRandomUser(t)
-// 	createRandomExpense(t, user.UserID)
-// }
+	return income
+}
 
-// func TestDeleteExpense(t *testing.T) {
-// 	user := createRandomUser(t)
-// 	e := createRandomExpense(t, user.UserID)
-// 	err := testQueries.DeleteExpense(context.Background(), e.ExpenseID)
-// 	require.NoError(t, err)
-// }
+func TestCreateIncome(t *testing.T) {
+	user := createRandomUser(t)
+	createRandomIncome(t, user.UserID)
+}
+
+func TestDeleteIncome(t *testing.T) {
+	user := createRandomUser(t)
+	i := createRandomIncome(t, user.UserID)
+	err := testQueries.DeleteExpense(context.Background(), i.UserID)
+	require.NoError(t, err)
+}

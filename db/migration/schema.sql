@@ -50,8 +50,8 @@ CREATE TABLE "incomes_types" (
 
 CREATE TABLE "budgets" (
   "budget_id" serial PRIMARY KEY,
-  "category_name" int,
-  "percentage" int NOT NULL,
+  "category_name" varchar(20) NOT NULL,
+  "amount" numeric(14,2) NOT NULL,
   "start_date" timestamptz DEFAULT (now()),
   "end_date" timestamptz,
   "user_id" int NOT NULL
