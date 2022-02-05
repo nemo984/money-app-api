@@ -10,10 +10,11 @@ INSERT INTO notifications (
 )
 RETURNING *;
 
--- name: UpdateNotification :exec
+-- name: UpdateNotification :one
 UPDATE notifications 
 SET read = $2
-WHERE user_id = $1;
+WHERE notification_id = $1
+RETURNING *;
 
 -- name: DeleteNotification :exec
 DELETE FROM notifications

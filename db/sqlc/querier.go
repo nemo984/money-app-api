@@ -23,7 +23,7 @@ type Querier interface {
 	GetNotifications(ctx context.Context, userID int32) ([]Notification, error)
 	GetUser(ctx context.Context, username string) (User, error)
 	UpdateBudget(ctx context.Context, arg UpdateBudgetParams) error
-	UpdateNotification(ctx context.Context, arg UpdateNotificationParams) error
+	UpdateNotification(ctx context.Context, arg UpdateNotificationParams) (Notification, error)
 	UpdateUser(ctx context.Context, arg UpdateUserParams) (User, error)
 }
 

@@ -90,18 +90,29 @@ func (q *Queries) GetNotifications(ctx context.Context, userID int32) ([]Notific
 	return items, nil
 }
 
-const updateNotification = `-- name: UpdateNotification :exec
+const updateNotification = `-- name: UpdateNotification :one
 UPDATE notifications 
 SET read = $2
-WHERE user_id = $1
+WHERE notification_id = $1
+RETURNING notification_id, user_id, description, type, priority, read, created_at
 `
 
 type UpdateNotificationParams struct {
-	UserID int32        `json:"user_id"`
-	Read   sql.NullBool `json:"read"`
+	NotificationID int32        `json:"notification_id"`
+	Read           sql.NullBool `json:"read"`
 }
 
-func (q *Queries) UpdateNotification(ctx context.Context, arg UpdateNotificationParams) error {
-	_, err := q.db.ExecContext(ctx, updateNotification, arg.UserID, arg.Read)
-	return err
+func (q *Queries) UpdateNotification(ctx context.Context, arg UpdateNotificationParams) (Notification, error) {
+	row := q.db.QueryRowContext(ctx, updateNotification, arg.NotificationID, arg.Read)
+	var i Notification
+	err := row.Scan(
+		&i.NotificationID,
+		&i.UserID,
+		&i.Description,
+		&i.Type,
+		&i.Priority,
+		&i.Read,
+		&i.CreatedAt,
+	)
+	return i, err
 }
