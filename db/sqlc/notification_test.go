@@ -14,9 +14,9 @@ func createRandomNotification(t *testing.T, userID int32) Notification {
 		UserID: userID,
 		Description: sql.NullString{
 			String: util.RandomString(100),
-			Valid: true,
+			Valid:  true,
 		},
-		Type: util.RandomString(15),
+		Type:     util.RandomString(15),
 		Priority: NotificationPriorityHigh,
 	}
 
@@ -63,7 +63,7 @@ func TestUpdateNotification(t *testing.T) {
 	arg := UpdateNotificationParams{
 		NotificationID: n.NotificationID,
 		Read: sql.NullBool{
-			Bool: true,
+			Bool:  true,
 			Valid: true,
 		},
 	}
