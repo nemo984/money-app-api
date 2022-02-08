@@ -1,21 +1,21 @@
-package handlers
+package handler
 
 import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	db "github.com/nemo984/money-app-api/db/sqlc"
+	"github.com/nemo984/money-app-api/service"
 )
 
 type Server struct {
-	db     db.Querier
-	router *gin.Engine
+	service service.Service
+	router  *gin.Engine
 }
 
-func NewServer(db db.Querier) *Server {
-	server := &Server{db: db}
+func NewServer(service service.Service) *Server {
+	server := &Server{service: service}
 	router := gin.Default()
-	
+
 	//setup routes func
 	router.GET("/ping", func(c *gin.Context) {
 		c.String(http.StatusOK, "cool")
@@ -30,7 +30,7 @@ func (s *Server) Start(addr string) error {
 	return s.router.Run(addr)
 }
 
-func errorResponse(err error) gin.H{
+func errorResponse(err error) gin.H {
 	return gin.H{
 		"error": err.Error(),
 	}

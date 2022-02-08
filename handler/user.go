@@ -1,4 +1,4 @@
-package handlers
+package handler
 
 import (
 	"net/http"
@@ -23,11 +23,10 @@ func (s *Server) createUser(c *gin.Context) {
 		return
 	}
 
-	arg := db.CreateUserParams{
+	user, err := s.service.CreateUser(c, db.CreateUserParams{
 		Username: req.Username,
 		Password: req.Password,
-	}
-	user, err := s.db.CreateUser(c, arg)
+	})
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, errorResponse(err))
 		return

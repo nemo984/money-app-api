@@ -6,7 +6,8 @@ import (
 
 	_ "github.com/lib/pq"
 	db "github.com/nemo984/money-app-api/db/sqlc"
-	"github.com/nemo984/money-app-api/handlers"
+	"github.com/nemo984/money-app-api/handler"
+	"github.com/nemo984/money-app-api/service"
 )
 
 const dbSource = "postgresql://postgres:postgres@localhost:5432/postgres?sslmode=disable"
@@ -17,8 +18,8 @@ func main() {
 		log.Fatal("Cannot connect to database")
 	}
 	queries := db.New(conn)
-	s := handlers.NewServer(queries)
+	service := service.NewService(queries)
+	s := handler.NewServer(service)
 
 	log.Fatal(s.Start(":8080"))
 }
-
