@@ -21,6 +21,7 @@ func NewServer(service service.Service) *Server {
 		c.String(http.StatusOK, "cool")
 	})
 	router.POST("/users", server.createUser)
+	router.DELETE("/users", server.deleteUser)
 
 	server.router = router
 	return server

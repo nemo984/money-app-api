@@ -16,6 +16,10 @@ type createUserResponse struct {
 	UserID int32 `json:"id"`
 }
 
+type deleteUserRequest struct {
+	Username string `json:"username" binding:"required"`
+}
+
 func (s *Server) createUser(c *gin.Context) {
 	var req createUserRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -32,7 +36,24 @@ func (s *Server) createUser(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, createUserResponse{
+	c.JSON(http.StatusCreated, createUserResponse{
 		UserID: user.UserID,
 	})
 }
+
+func (s *Server) deleteUser(c *gin.Context) {
+	var req deleteUserRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, errorResponse(err))
+		return
+	}
+
+	err := s.service.DeleteUser(c, req.Username)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+
+	c.Status(http.StatusNoContent)
+}
+
