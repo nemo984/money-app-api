@@ -16,12 +16,13 @@ func NewServer(service service.Service) *Server {
 	server := &Server{service: service}
 	router := gin.Default()
 
-	//setup routes func
-	router.GET("/ping", func(c *gin.Context) {
-		c.String(http.StatusOK, "cool")
-	})
-	router.POST("/users", server.createUser)
-	router.DELETE("/users", server.deleteUser)
+	users := router.Group("/users")
+	{
+		users.POST("", server.createUser)
+		users.POST("/token", server.createUserToken)
+		users.PATCH("/:id", server.updateUser)
+		users.DELETE("/:id", server.deleteUser)
+	}
 
 	server.router = router
 	return server

@@ -2,6 +2,10 @@
 SELECT * FROM users
 WHERE username = $1 LIMIT 1;
 
+-- name: GetUserByID :one
+SELECT * FROM users
+WHERE user_id = $1 LIMIT 1;
+
 -- name: CreateUser :one
 INSERT INTO users (
   username, name, password, profile_url
@@ -12,13 +16,13 @@ RETURNING *;
 
 -- name: UpdateUser :one
 UPDATE users 
-SET username = $2,
-    name = $3,
-    password = $4,
-    profile_url = $5
+SET username = COALESCE($2, username),
+    name = COALESCE($3, name),
+    password = COALESCE($4, password),
+    profile_url = COALESCE($5, profile_url)
 WHERE user_id = $1
 RETURNING *;
 
 -- name: DeleteUser :exec
 DELETE FROM users
-WHERE username = $1;
+WHERE user_id = $1;

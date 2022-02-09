@@ -45,11 +45,11 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, e
 
 const deleteUser = `-- name: DeleteUser :exec
 DELETE FROM users
-WHERE username = $1
+WHERE user_id = $1
 `
 
-func (q *Queries) DeleteUser(ctx context.Context, username string) error {
-	_, err := q.db.ExecContext(ctx, deleteUser, username)
+func (q *Queries) DeleteUser(ctx context.Context, userID int32) error {
+	_, err := q.db.ExecContext(ctx, deleteUser, userID)
 	return err
 }
 
@@ -72,12 +72,31 @@ func (q *Queries) GetUser(ctx context.Context, username string) (User, error) {
 	return i, err
 }
 
+const getUserByID = `-- name: GetUserByID :one
+SELECT user_id, username, name, password, profile_url, created_at FROM users
+WHERE user_id = $1 LIMIT 1
+`
+
+func (q *Queries) GetUserByID(ctx context.Context, userID int32) (User, error) {
+	row := q.db.QueryRowContext(ctx, getUserByID, userID)
+	var i User
+	err := row.Scan(
+		&i.UserID,
+		&i.Username,
+		&i.Name,
+		&i.Password,
+		&i.ProfileUrl,
+		&i.CreatedAt,
+	)
+	return i, err
+}
+
 const updateUser = `-- name: UpdateUser :one
 UPDATE users 
-SET username = $2,
-    name = $3,
-    password = $4,
-    profile_url = $5
+SET username = COALESCE($2, username),
+    name = COALESCE($3, name),
+    password = COALESCE($4, password),
+    profile_url = COALESCE($5, profile_url)
 WHERE user_id = $1
 RETURNING user_id, username, name, password, profile_url, created_at
 `

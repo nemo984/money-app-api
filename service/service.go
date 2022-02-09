@@ -8,7 +8,9 @@ import (
 
 type Service interface {
 	CreateUser(context.Context, db.CreateUserParams) (db.User, error)
-	DeleteUser(ctx context.Context, username string) error
+	LoginUser(ctx context.Context, username string, password string) (int32, error)
+	DeleteUser(context.Context, int32) error
+	UpdateUser(context.Context, db.UpdateUserParams) error
 }
 
 type service struct {
