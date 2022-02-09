@@ -32,7 +32,7 @@ func (s *Server) createUser(c *gin.Context) {
 		Password: req.Password,
 	})
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, errorResponse(err))
+		handleError(c, err)
 		return
 	}
 
@@ -50,10 +50,9 @@ func (s *Server) deleteUser(c *gin.Context) {
 
 	err := s.service.DeleteUser(c, req.Username)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, errorResponse(err))
+		handleError(c, err)
 		return
 	}
 
 	c.Status(http.StatusNoContent)
 }
-

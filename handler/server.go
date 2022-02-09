@@ -31,6 +31,15 @@ func (s *Server) Start(addr string) error {
 	return s.router.Run(addr)
 }
 
+func handleError(c *gin.Context, err error) {
+	switch v := err.(type) {
+	case service.AppError:
+		c.JSON(v.StatusCode, errorResponse(v.Err))
+	case error:
+		c.JSON(http.StatusInternalServerError, errorResponse(v))
+	}
+}
+
 func errorResponse(err error) gin.H {
 	return gin.H{
 		"error": err.Error(),

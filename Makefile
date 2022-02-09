@@ -11,4 +11,7 @@ mockgen:
 test:
 	go test -v -cover ./...
 
+c:
+	golangci-lint run
+	errcheck ./...
 

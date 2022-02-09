@@ -18,3 +18,12 @@ type service struct {
 func NewService(db db.Querier) Service {
 	return &service{db: db}
 }
+
+type AppError struct {
+	StatusCode int
+	Err        error
+}
+
+func (a AppError) Error() string {
+	return a.Err.Error()
+}
