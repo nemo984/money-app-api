@@ -8,6 +8,8 @@ import (
 	db "github.com/nemo984/money-app-api/db/sqlc"
 )
 
+const SECRET_KEY = "TODO: use_env_later"
+
 //TODO: validator
 type usernamePasswordRequest struct {
 	Username string `json:"username" binding:"required"`
@@ -42,10 +44,11 @@ func (s *Server) createUserToken(c *gin.Context) {
 		return
 	}
 
-	claims := jwt.MapClaims{}
-	claims["user_id"] = userID
+	claims := JWTClaims{
+		UserID: userID,
+	}
 	at := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	token, err := at.SignedString([]byte("TODO: use_env_later"))
+	token, err := at.SignedString([]byte(SECRET_KEY))
 	if err != nil {
 		handleError(c, err)
 	}
@@ -61,7 +64,7 @@ func (s *Server) createUser(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
-	//TODO: hash the pwd
+	//TODO: hash the pwd inside service
 	user, err := s.service.CreateUser(c, db.CreateUserParams{
 		Username: req.Username,
 		Password: req.Password,
@@ -105,13 +108,8 @@ func (s *Server) updateUser(c *gin.Context) {
 }
 
 func (s *Server) deleteUser(c *gin.Context) {
-	var uri idURI
-	if err := c.ShouldBindUri(&uri); err != nil {
-		c.JSON(http.StatusBadRequest, errorResponse(err))
-		return
-	}
-
-	err := s.service.DeleteUser(c, uri.UserID)
+	userPayload := c.MustGet(authorizationPayload).(*JWTClaims)
+	err := s.service.DeleteUser(c, userPayload.UserID)
 	if err != nil {
 		handleError(c, err)
 		return

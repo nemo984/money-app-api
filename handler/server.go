@@ -15,13 +15,19 @@ type Server struct {
 func NewServer(service service.Service) *Server {
 	server := &Server{service: service}
 	router := gin.Default()
-
-	users := router.Group("/users")
+	apiRoute := router.Group("/api")
+ 
+	users := apiRoute.Group("/users")
 	{
 		users.POST("", server.createUser)
 		users.POST("/token", server.createUserToken)
-		users.PATCH("/:id", server.updateUser)
-		users.DELETE("/:id", server.deleteUser)
+	}
+	
+	userRoute := apiRoute.Group("/me") 
+	{	
+		userRoute.Use(authenticatedToken())
+		userRoute.PATCH("", server.updateUser)
+		userRoute.DELETE("", server.deleteUser)
 	}
 
 	server.router = router
