@@ -16,16 +16,17 @@ func NewServer(service service.Service) *Server {
 	server := &Server{service: service}
 	router := gin.Default()
 	apiRoute := router.Group("/api")
- 
+
 	users := apiRoute.Group("/users")
 	{
 		users.POST("", server.createUser)
 		users.POST("/token", server.createUserToken)
 	}
-	
-	userRoute := apiRoute.Group("/me") 
-	{	
+
+	userRoute := apiRoute.Group("/me")
+	{
 		userRoute.Use(authenticatedToken())
+		userRoute.GET("", server.getUser)
 		userRoute.PATCH("", server.updateUser)
 		userRoute.DELETE("", server.deleteUser)
 	}

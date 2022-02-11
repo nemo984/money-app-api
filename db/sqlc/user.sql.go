@@ -93,29 +93,46 @@ func (q *Queries) GetUserByID(ctx context.Context, userID int32) (User, error) {
 
 const updateUser = `-- name: UpdateUser :one
 UPDATE users 
-SET username = COALESCE($2, username),
-    name = COALESCE($3, name),
-    password = COALESCE($4, password),
-    profile_url = COALESCE($5, profile_url)
-WHERE user_id = $1
+SET 
+    username = CASE WHEN $1::boolean
+        THEN $2::VARCHAR(20) ELSE username END,
+
+    name = CASE WHEN $3::boolean
+        THEN $4::VARCHAR(20) ELSE name END,
+
+    password = CASE WHEN $5::boolean
+        THEN $6::VARCHAR ELSE password END,
+
+    profile_url = CASE WHEN $7::boolean
+        THEN $8::VARCHAR ELSE profile_url END
+
+WHERE user_id = $9
 RETURNING user_id, username, name, password, profile_url, created_at
 `
 
 type UpdateUserParams struct {
-	UserID     int32          `json:"user_id"`
-	Username   string         `json:"username"`
-	Name       sql.NullString `json:"name"`
-	Password   string         `json:"password"`
-	ProfileUrl sql.NullString `json:"profile_url"`
+	UsernameDoUpdate bool   `json:"username_do_update"`
+	Username         string `json:"username"`
+	NameDoUpdate     bool   `json:"name_do_update"`
+	Name             string `json:"name"`
+	PasswordDoUpdate bool   `json:"password_do_update"`
+	Password         string `json:"password"`
+	ProfileDoUpdate  bool   `json:"profile_do_update"`
+	ProfileUrl       string `json:"profile_url"`
+	UserID           int32  `json:"user_id"`
 }
 
 func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) (User, error) {
 	row := q.db.QueryRowContext(ctx, updateUser,
-		arg.UserID,
+		arg.UsernameDoUpdate,
 		arg.Username,
+		arg.NameDoUpdate,
 		arg.Name,
+		arg.PasswordDoUpdate,
 		arg.Password,
+		arg.ProfileDoUpdate,
 		arg.ProfileUrl,
+		arg.UserID,
 	)
 	var i User
 	err := row.Scan(

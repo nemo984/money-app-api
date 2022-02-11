@@ -11,8 +11,8 @@ import (
 )
 
 const (
-	authorizationHeader = "Authorization"
-	authorizationBearer = "bearer"
+	authorizationHeader  = "Authorization"
+	authorizationBearer  = "bearer"
 	authorizationPayload = "payload"
 )
 
@@ -31,7 +31,7 @@ func authenticatedToken() gin.HandlerFunc {
 			return
 		}
 
-		fields := strings.Fields(authHeader)	
+		fields := strings.Fields(authHeader)
 		if len(fields) < 2 {
 			err := errors.New("invalid auth header format")
 			c.AbortWithStatusJSON(http.StatusUnauthorized, errorResponse(err))

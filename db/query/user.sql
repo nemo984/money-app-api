@@ -16,11 +16,20 @@ RETURNING *;
 
 -- name: UpdateUser :one
 UPDATE users 
-SET username = COALESCE($2, username),
-    name = COALESCE($3, name),
-    password = COALESCE($4, password),
-    profile_url = COALESCE($5, profile_url)
-WHERE user_id = $1
+SET 
+    username = CASE WHEN @username_do_update::boolean
+        THEN @username::VARCHAR(20) ELSE username END,
+
+    name = CASE WHEN @name_do_update::boolean
+        THEN @name::VARCHAR(20) ELSE name END,
+
+    password = CASE WHEN @password_do_update::boolean
+        THEN @password::VARCHAR ELSE password END,
+
+    profile_url = CASE WHEN @profile_do_update::boolean
+        THEN @profile_url::VARCHAR ELSE profile_url END
+
+WHERE user_id = @user_id
 RETURNING *;
 
 -- name: DeleteUser :exec

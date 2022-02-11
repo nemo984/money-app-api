@@ -7,10 +7,11 @@ import (
 )
 
 type Service interface {
+	GetUser(context.Context, int32) (db.User, error)
 	CreateUser(context.Context, db.CreateUserParams) (db.User, error)
 	LoginUser(ctx context.Context, username string, password string) (int32, error)
 	DeleteUser(context.Context, int32) error
-	UpdateUser(context.Context, db.UpdateUserParams) error
+	UpdateUser(context.Context, UpdateUserParams) (db.User, error)
 }
 
 type service struct {
