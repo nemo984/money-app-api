@@ -33,6 +33,9 @@ type Service interface {
 	GetIncomeTypes(ctx context.Context) ([]db.IncomeType, error)
 	CreateIncomeType(ctx context.Context, name string) (db.IncomeType, error)
 	DeleteIncomeType(ctx context.Context, id int32) error
+
+	CreateNotification(ctx context.Context, args db.CreateNotificationParams) (db.Notification, error)
+	UpdateNotification(ctx context.Context, args db.UpdateNotificationParams) (db.Notification, error)
 }
 
 type service struct {
