@@ -49,41 +49,42 @@ func (e *NotificationPriority) Scan(src interface{}) error {
 }
 
 type Budget struct {
-	BudgetID     int32        `json:"budget_id"`
-	CategoryName string       `json:"category_name"`
-	Amount       string       `json:"amount"`
-	StartDate    sql.NullTime `json:"start_date"`
-	EndDate      sql.NullTime `json:"end_date"`
-	UserID       int32        `json:"user_id"`
-	CreatedAt    sql.NullTime `json:"created_at"`
+	BudgetID   int32        `json:"budget_id"`
+	CategoryID int32        `json:"category_id"`
+	Amount     string       `json:"amount"`
+	StartDate  sql.NullTime `json:"start_date"`
+	EndDate    sql.NullTime `json:"end_date"`
+	UserID     int32        `json:"user_id"`
 }
 
 type Category struct {
-	CategoryName string `json:"category_name"`
+	CategoryID int32  `json:"category_id"`
+	Name       string `json:"name"`
 }
 
 type Expense struct {
-	ExpenseID    int32          `json:"expense_id"`
-	CategoryName string         `json:"category_name"`
-	Amount       string         `json:"amount"`
-	CreatedAt    sql.NullTime   `json:"created_at"`
-	Frequency    DateFrequency  `json:"frequency"`
-	Note         sql.NullString `json:"note"`
-	UserID       int32          `json:"user_id"`
+	ExpenseID  int32          `json:"expense_id"`
+	CategoryID int32          `json:"category_id"`
+	Amount     string         `json:"amount"`
+	CreatedAt  sql.NullTime   `json:"created_at"`
+	Frequency  DateFrequency  `json:"frequency"`
+	Note       sql.NullString `json:"note"`
+	UserID     int32          `json:"user_id"`
 }
 
 type Income struct {
-	IncomeID       int32          `json:"income_id"`
-	IncomeTypeName string         `json:"income_type_name"`
-	Description    sql.NullString `json:"description"`
-	Amount         string         `json:"amount"`
-	CreatedAt      sql.NullTime   `json:"created_at"`
-	Frequency      DateFrequency  `json:"frequency"`
-	UserID         int32          `json:"user_id"`
+	IncomeID     int32          `json:"income_id"`
+	IncomeTypeID int32          `json:"income_type_id"`
+	Description  sql.NullString `json:"description"`
+	Amount       string         `json:"amount"`
+	CreatedAt    sql.NullTime   `json:"created_at"`
+	Frequency    DateFrequency  `json:"frequency"`
+	UserID       int32          `json:"user_id"`
 }
 
 type IncomesType struct {
-	IncomeTypeName string `json:"income_type_name"`
+	IncomeTypeID int32  `json:"income_type_id"`
+	Name         string `json:"name"`
 }
 
 type Notification struct {

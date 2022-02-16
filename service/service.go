@@ -12,6 +12,10 @@ type Service interface {
 	LoginUser(ctx context.Context, username string, password string) (token string, err error)
 	DeleteUser(context.Context, int32) error
 	UpdateUser(context.Context, UpdateUserParams) (db.User, error)
+
+	GetCategories(context.Context) ([]db.Category, error)
+	CreateCategory(context.Context, string) (db.Category, error)
+	DeleteCategory(context.Context, int32) error
 }
 
 type service struct {

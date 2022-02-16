@@ -16,6 +16,9 @@ func NewServer(service service.Service) *Server {
 	server := &Server{service: service}
 	router := gin.Default()
 	apiRoute := router.Group("/api")
+	
+	apiRoute.GET("/google-login", server.GoogleLogin)
+	apiRoute.GET("/google-callback", server.GoogleCallback)
 
 	users := apiRoute.Group("/users")
 	{
@@ -23,15 +26,17 @@ func NewServer(service service.Service) *Server {
 		users.POST("/token", server.createUserToken)
 	}
 
-	apiRoute.GET("/google-login", server.GoogleLogin)
-	apiRoute.GET("/google-callback", server.GoogleCallback)
-
 	userRoute := apiRoute.Group("/me")
 	{
 		userRoute.Use(authenticatedToken())
 		userRoute.GET("", server.getUser)
 		userRoute.PATCH("", server.updateUser)
 		userRoute.DELETE("", server.deleteUser)
+	}
+
+	categoriesRoute := apiRoute.Group("/categories")
+	{
+		categoriesRoute.GET("", server.getCategories)
 	}
 
 	server.router = router

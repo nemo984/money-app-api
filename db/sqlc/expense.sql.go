@@ -10,25 +10,25 @@ import (
 
 const createExpense = `-- name: CreateExpense :one
 INSERT INTO expenses (
-  user_id, category_name, amount, frequency, note
+  user_id, category_id, amount, frequency, note
 ) VALUES (
   $1, $2, $3, $4, $5
 )
-RETURNING expense_id, category_name, amount, created_at, frequency, note, user_id
+RETURNING expense_id, category_id, amount, created_at, frequency, note, user_id
 `
 
 type CreateExpenseParams struct {
-	UserID       int32          `json:"user_id"`
-	CategoryName string         `json:"category_name"`
-	Amount       string         `json:"amount"`
-	Frequency    DateFrequency  `json:"frequency"`
-	Note         sql.NullString `json:"note"`
+	UserID     int32          `json:"user_id"`
+	CategoryID int32          `json:"category_id"`
+	Amount     string         `json:"amount"`
+	Frequency  DateFrequency  `json:"frequency"`
+	Note       sql.NullString `json:"note"`
 }
 
 func (q *Queries) CreateExpense(ctx context.Context, arg CreateExpenseParams) (Expense, error) {
 	row := q.db.QueryRowContext(ctx, createExpense,
 		arg.UserID,
-		arg.CategoryName,
+		arg.CategoryID,
 		arg.Amount,
 		arg.Frequency,
 		arg.Note,
@@ -36,7 +36,7 @@ func (q *Queries) CreateExpense(ctx context.Context, arg CreateExpenseParams) (E
 	var i Expense
 	err := row.Scan(
 		&i.ExpenseID,
-		&i.CategoryName,
+		&i.CategoryID,
 		&i.Amount,
 		&i.CreatedAt,
 		&i.Frequency,
@@ -57,7 +57,7 @@ func (q *Queries) DeleteExpense(ctx context.Context, userID int32) error {
 }
 
 const getExpenses = `-- name: GetExpenses :many
-SELECT expense_id, category_name, amount, created_at, frequency, note, user_id FROM expenses
+SELECT expense_id, category_id, amount, created_at, frequency, note, user_id FROM expenses
 WHERE user_id = $1
 `
 
@@ -72,7 +72,7 @@ func (q *Queries) GetExpenses(ctx context.Context, userID int32) ([]Expense, err
 		var i Expense
 		if err := rows.Scan(
 			&i.ExpenseID,
-			&i.CategoryName,
+			&i.CategoryID,
 			&i.Amount,
 			&i.CreatedAt,
 			&i.Frequency,

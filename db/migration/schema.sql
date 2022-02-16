@@ -21,12 +21,13 @@ CREATE TABLE "users" (
 );
 
 CREATE TABLE "categories" (
-  "category_name" varchar(20) PRIMARY KEY
+  "category_id" serial PRIMARY KEY,
+  "name" varchar(20) UNIQUE NOT NULL
 );
 
 CREATE TABLE "expenses" (
   "expense_id" serial PRIMARY KEY,
-  "category_name" varchar(20) NOT NULL,
+  "category_id" int NOT NULL,
   "amount" numeric(14,2) NOT NULL,
   "created_at" timestamptz DEFAULT (now()),
   "frequency" date_frequency,
@@ -36,7 +37,7 @@ CREATE TABLE "expenses" (
 
 CREATE TABLE "incomes" (
   "income_id" serial PRIMARY KEY,
-  "income_type_name" varchar(20) NOT NULL,
+  "income_type_id" int NOT NULL,
   "description" varchar,
   "amount" numeric(14,2) NOT NULL,
   "created_at" timestamptz DEFAULT (now()),
@@ -45,17 +46,17 @@ CREATE TABLE "incomes" (
 );
 
 CREATE TABLE "incomes_types" (
-  "income_type_name" varchar(20) PRIMARY KEY
+  "income_type_id" serial PRIMARY KEY,
+  "name" varchar(20) UNIQUE NOT NULL
 );
 
 CREATE TABLE "budgets" (
   "budget_id" serial PRIMARY KEY,
-  "category_name" varchar(20) NOT NULL,
+  "category_id" int NOT NULL,
   "amount" numeric(14,2) NOT NULL,
   "start_date" timestamptz DEFAULT (now()),
   "end_date" timestamptz,
-  "user_id" int NOT NULL,
-  "created_at" timestamptz DEFAULT (now())
+  "user_id" int NOT NULL
 );
 
 CREATE TABLE "notifications" (
@@ -68,15 +69,15 @@ CREATE TABLE "notifications" (
   "created_at" timestamptz DEFAULT (now())
 );
 
-ALTER TABLE "expenses" ADD FOREIGN KEY ("category_name") REFERENCES "categories" ("category_name");
+ALTER TABLE "expenses" ADD FOREIGN KEY ("category_id") REFERENCES "categories" ("category_id");
 
 ALTER TABLE "expenses" ADD FOREIGN KEY ("user_id") REFERENCES "users" ("user_id");
 
-ALTER TABLE "incomes" ADD FOREIGN KEY ("income_type_name") REFERENCES "incomes_types" ("income_type_name");
+ALTER TABLE "incomes" ADD FOREIGN KEY ("income_type_id") REFERENCES "incomes_types" ("income_type_id");
 
 ALTER TABLE "incomes" ADD FOREIGN KEY ("user_id") REFERENCES "users" ("user_id");
 
-ALTER TABLE "budgets" ADD FOREIGN KEY ("category_name") REFERENCES "categories" ("category_name");
+ALTER TABLE "budgets" ADD FOREIGN KEY ("category_id") REFERENCES "categories" ("category_id");
 
 ALTER TABLE "budgets" ADD FOREIGN KEY ("user_id") REFERENCES "users" ("user_id");
 
@@ -89,9 +90,3 @@ CREATE INDEX "Date" ON "expenses" ("created_at");
 CREATE INDEX "Date" ON "incomes" ("created_at");
 
 CREATE INDEX "Date" ON "notifications" ("created_at");
-
-
-INSERT INTO categories VALUES ('Transportation');
-INSERT INTO categories VALUES ('Food');
-
-INSERT INTO incomes_types VALUES ('Passive');
