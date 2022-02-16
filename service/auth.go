@@ -51,4 +51,3 @@ func VerifyToken(token string) (JWTClaims, error) {
 	}
 	return *claims, nil
 }
-

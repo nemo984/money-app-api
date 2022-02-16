@@ -2,6 +2,10 @@
 SELECT * FROM expenses
 WHERE user_id = $1;
 
+-- name: GetExpense :one
+SELECT * FROM expenses
+WHERE expense_id = $1;
+
 -- name: CreateExpense :one
 INSERT INTO expenses (
   user_id, category_id, amount, frequency, note

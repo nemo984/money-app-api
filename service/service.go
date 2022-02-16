@@ -16,6 +16,10 @@ type Service interface {
 	GetCategories(context.Context) ([]db.Category, error)
 	CreateCategory(context.Context, string) (db.Category, error)
 	DeleteCategory(context.Context, int32) error
+
+	GetExpenses(context.Context, int32) ([]db.Expense, error)
+	CreateExpense(context.Context, db.CreateExpenseParams) (db.Expense, error)
+	DeleteExpense(ctx context.Context, userID, expenseID int32) error
 }
 
 type service struct {

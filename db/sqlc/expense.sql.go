@@ -56,6 +56,26 @@ func (q *Queries) DeleteExpense(ctx context.Context, userID int32) error {
 	return err
 }
 
+const getExpense = `-- name: GetExpense :one
+SELECT expense_id, category_id, amount, created_at, frequency, note, user_id FROM expenses
+WHERE expense_id = $1
+`
+
+func (q *Queries) GetExpense(ctx context.Context, expenseID int32) (Expense, error) {
+	row := q.db.QueryRowContext(ctx, getExpense, expenseID)
+	var i Expense
+	err := row.Scan(
+		&i.ExpenseID,
+		&i.CategoryID,
+		&i.Amount,
+		&i.CreatedAt,
+		&i.Frequency,
+		&i.Note,
+		&i.UserID,
+	)
+	return i, err
+}
+
 const getExpenses = `-- name: GetExpenses :many
 SELECT expense_id, category_id, amount, created_at, frequency, note, user_id FROM expenses
 WHERE user_id = $1

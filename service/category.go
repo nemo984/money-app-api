@@ -9,9 +9,9 @@ import (
 func (s *service) GetCategories(ctx context.Context) ([]db.Category, error) {
 	categories, err := s.db.GetCategories(ctx)
 	if err != nil {
-		return nil, err
+		return []db.Category{}, err
 	}
-	
+
 	return categories, nil
 }
 
@@ -28,6 +28,6 @@ func (s *service) DeleteCategory(ctx context.Context, id int32) error {
 	if err := s.db.DeleteCategory(ctx, id); err != nil {
 		return err
 	}
-	
+
 	return nil
 }

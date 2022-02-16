@@ -12,8 +12,8 @@ import (
 
 var (
 	testService Service
-	dbDriver = "postgres"
-	dbSource = "postgresql://postgres:postgres@localhost:5432/postgres?sslmode=disable"
+	dbDriver    = "postgres"
+	dbSource    = "postgresql://postgres:postgres@localhost:5432/postgres?sslmode=disable"
 )
 
 func TestMain(m *testing.M) {

@@ -8,9 +8,9 @@ import (
 )
 
 func TestCreateCategory(t *testing.T) {
-	testCases := []struct{
+	testCases := []struct {
 		name string
-	} {
+	}{
 		{name: "Transportation"},
 		{name: "Food"},
 		{name: "Shopping"},

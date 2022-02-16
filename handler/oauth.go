@@ -76,7 +76,7 @@ func (s *Server) GoogleCallback(c *gin.Context) {
 		Username: userInfo.Email,
 		Name: sql.NullString{
 			String: userInfo.Name,
-			Valid: true,
+			Valid:  true,
 		},
 		Password: userInfo.Name, //TODO: later
 		ProfileUrl: sql.NullString{
@@ -88,13 +88,13 @@ func (s *Server) GoogleCallback(c *gin.Context) {
 		handleError(c, err)
 		return
 	}
-	
+
 	jwtToken, err := service.CreateToken(user.UserID)
 	if err != nil {
 		handleError(c, err)
 		return
 	}
-	
+
 	c.JSON(http.StatusOK, gin.H{
 		"token": jwtToken,
 	})

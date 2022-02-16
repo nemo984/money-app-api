@@ -16,7 +16,7 @@ import (
 var (
 	dbDriver = os.Getenv("DB_DRIVER")
 	dbSource = os.Getenv("DB_SOURCE")
-	port = os.Getenv("PORT")
+	port     = os.Getenv("PORT")
 )
 
 func main() {

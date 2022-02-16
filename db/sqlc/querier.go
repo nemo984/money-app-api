@@ -21,6 +21,7 @@ type Querier interface {
 	DeleteUser(ctx context.Context, userID int32) error
 	GetBudgets(ctx context.Context, userID int32) ([]Budget, error)
 	GetCategories(ctx context.Context) ([]Category, error)
+	GetExpense(ctx context.Context, expenseID int32) (Expense, error)
 	GetExpenses(ctx context.Context, userID int32) ([]Expense, error)
 	GetIncomes(ctx context.Context, userID int32) ([]Income, error)
 	GetNotifications(ctx context.Context, userID int32) ([]Notification, error)
