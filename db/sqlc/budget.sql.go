@@ -45,12 +45,31 @@ func (q *Queries) CreateBudget(ctx context.Context, arg CreateBudgetParams) (Bud
 
 const deleteBudget = `-- name: DeleteBudget :exec
 DELETE FROM budgets
-WHERE user_id = $1
+WHERE budget_id = $1
 `
 
-func (q *Queries) DeleteBudget(ctx context.Context, userID int32) error {
-	_, err := q.db.ExecContext(ctx, deleteBudget, userID)
+func (q *Queries) DeleteBudget(ctx context.Context, budgetID int32) error {
+	_, err := q.db.ExecContext(ctx, deleteBudget, budgetID)
 	return err
+}
+
+const getBudget = `-- name: GetBudget :one
+SELECT budget_id, category_id, amount, start_date, end_date, user_id FROM budgets
+WHERE budget_id = $1
+`
+
+func (q *Queries) GetBudget(ctx context.Context, budgetID int32) (Budget, error) {
+	row := q.db.QueryRowContext(ctx, getBudget, budgetID)
+	var i Budget
+	err := row.Scan(
+		&i.BudgetID,
+		&i.CategoryID,
+		&i.Amount,
+		&i.StartDate,
+		&i.EndDate,
+		&i.UserID,
+	)
+	return i, err
 }
 
 const getBudgets = `-- name: GetBudgets :many

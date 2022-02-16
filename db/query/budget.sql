@@ -2,6 +2,10 @@
 SELECT * FROM budgets
 WHERE user_id = $1;
 
+-- name: GetBudget :one
+SELECT * FROM budgets
+WHERE budget_id = $1;
+
 -- name: CreateBudget :one
 INSERT INTO budgets (
   category_id, amount, end_date, user_id
@@ -19,4 +23,4 @@ WHERE user_id = $1;
 
 -- name: DeleteBudget :exec
 DELETE FROM budgets
-WHERE user_id = $1;
+WHERE budget_id = $1;

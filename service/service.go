@@ -20,6 +20,10 @@ type Service interface {
 	GetExpenses(context.Context, int32) ([]db.Expense, error)
 	CreateExpense(context.Context, db.CreateExpenseParams) (db.Expense, error)
 	DeleteExpense(ctx context.Context, userID, expenseID int32) error
+
+	GetBudgets(ctx context.Context, userID int32) ([]db.Budget, error)
+	CreateBudget(ctx context.Context, args db.CreateBudgetParams) (db.Budget, error)
+	DeleteBudget(ctx context.Context, userID, budgetID int32) error
 }
 
 type service struct {

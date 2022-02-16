@@ -39,6 +39,13 @@ func NewServer(service service.Service) *Server {
 			expensesRoute.POST("", server.createExpense)
 			expensesRoute.DELETE("/:id", server.deleteExpense)
 		}
+
+		budgetsRoute := userRoute.Group("/budgets")
+		{
+			budgetsRoute.GET("", server.getBudgets)
+			budgetsRoute.POST("", server.createBudget)
+			budgetsRoute.DELETE("/:id", server.deleteBudget)
+		}
 	}
 
 	categoriesRoute := apiRoute.Group("/categories")

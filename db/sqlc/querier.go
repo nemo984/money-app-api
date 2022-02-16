@@ -13,12 +13,13 @@ type Querier interface {
 	CreateIncome(ctx context.Context, arg CreateIncomeParams) (Income, error)
 	CreateNotification(ctx context.Context, arg CreateNotificationParams) (Notification, error)
 	CreateUser(ctx context.Context, arg CreateUserParams) (User, error)
-	DeleteBudget(ctx context.Context, userID int32) error
+	DeleteBudget(ctx context.Context, budgetID int32) error
 	DeleteCategory(ctx context.Context, categoryID int32) error
 	DeleteExpense(ctx context.Context, userID int32) error
 	DeleteIncome(ctx context.Context, userID int32) error
 	DeleteNotification(ctx context.Context, userID int32) error
 	DeleteUser(ctx context.Context, userID int32) error
+	GetBudget(ctx context.Context, budgetID int32) (Budget, error)
 	GetBudgets(ctx context.Context, userID int32) ([]Budget, error)
 	GetCategories(ctx context.Context) ([]Category, error)
 	GetExpense(ctx context.Context, expenseID int32) (Expense, error)
