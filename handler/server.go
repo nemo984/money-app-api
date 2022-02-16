@@ -23,6 +23,9 @@ func NewServer(service service.Service) *Server {
 		users.POST("/token", server.createUserToken)
 	}
 
+	apiRoute.GET("/google-login", server.GoogleLogin)
+	apiRoute.GET("/google-callback", server.GoogleCallback)
+
 	userRoute := apiRoute.Group("/me")
 	{
 		userRoute.Use(authenticatedToken())

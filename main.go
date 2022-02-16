@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"log"
 
+	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
 	db "github.com/nemo984/money-app-api/db/sqlc"
 	"github.com/nemo984/money-app-api/handler"
@@ -13,6 +14,11 @@ import (
 const dbSource = "postgresql://postgres:postgres@localhost:5432/postgres?sslmode=disable"
 
 func main() {
+	err := godotenv.Load()
+	if err != nil {
+	  log.Fatal("Error loading .env file")
+	}
+	
 	conn, err := sql.Open("postgres", dbSource)
 	if err != nil {
 		log.Fatal("Cannot connect to database")

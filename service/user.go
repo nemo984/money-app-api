@@ -16,6 +16,10 @@ var (
 		StatusCode: http.StatusNotFound,
 		Err:        errors.New("user doesn't exists"),
 	}
+	ErrUserAlreadyExists = AppError{
+		StatusCode: http.StatusConflict,
+		Err:        errors.New("user already exists"),
+	}
 )
 
 func (s *service) GetUser(ctx context.Context, userID int32) (db.User, error) {
@@ -46,19 +50,15 @@ func (s *service) GetUserByName(ctx context.Context, username string) (db.User, 
 	return user, nil
 }
 
-
 func (s *service) CreateUser(ctx context.Context, args db.CreateUserParams) (db.User, error) {
-	_, err := s.GetUserByName(ctx, args.Username)
+	u, err := s.GetUserByName(ctx, args.Username)
 	if err != nil && !errors.Is(err, ErrUserNotFound) {
 		return db.User{}, err
 	}
 	if err == nil {
-		return db.User{}, AppError{
-			StatusCode: http.StatusConflict,
-			Err:        errors.New("username already taken"),
-		}
+		return u, ErrUserAlreadyExists
 	}
-	
+
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(args.Password), 4)
 	if err != nil {
 		log.Println("[error] bcrypt hashing pwd:", err.Error())
@@ -89,7 +89,7 @@ func (s *service) LoginUser(ctx context.Context, username, password string) (tok
 		}
 	}
 
-	token, err = createToken(user.UserID)
+	token, err = CreateToken(user.UserID)
 	if err != nil {
 		return "", err
 	}

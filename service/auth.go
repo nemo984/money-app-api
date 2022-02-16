@@ -14,7 +14,7 @@ type JWTClaims struct {
 	UserID int32 `json:"user_id"`
 }
 
-func createToken(userID int32) (string, error) {
+func CreateToken(userID int32) (string, error) {
 	claims := JWTClaims{
 		UserID: userID,
 	}
