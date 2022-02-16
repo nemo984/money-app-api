@@ -2,24 +2,25 @@ package main
 
 import (
 	"database/sql"
+	"fmt"
 	"log"
+	"os"
 
-	"github.com/joho/godotenv"
+	_ "github.com/joho/godotenv/autoload"
 	_ "github.com/lib/pq"
 	db "github.com/nemo984/money-app-api/db/sqlc"
 	"github.com/nemo984/money-app-api/handler"
 	"github.com/nemo984/money-app-api/service"
 )
 
-const dbSource = "postgresql://postgres:postgres@localhost:5432/postgres?sslmode=disable"
+var (
+	dbDriver = os.Getenv("DB_DRIVER")
+	dbSource = os.Getenv("DB_SOURCE")
+	port = os.Getenv("PORT")
+)
 
 func main() {
-	err := godotenv.Load()
-	if err != nil {
-	  log.Fatal("Error loading .env file")
-	}
-	
-	conn, err := sql.Open("postgres", dbSource)
+	conn, err := sql.Open(dbDriver, dbSource)
 	if err != nil {
 		log.Fatal("Cannot connect to database")
 	}
@@ -27,5 +28,5 @@ func main() {
 	service := service.NewService(queries)
 	s := handler.NewServer(service)
 
-	log.Fatal(s.Start(":8080"))
+	log.Fatal(s.Start(fmt.Sprintf(":%s", port)))
 }

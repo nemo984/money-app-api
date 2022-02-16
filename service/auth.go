@@ -3,11 +3,13 @@ package service
 import (
 	"errors"
 	"net/http"
+	"os"
 
 	"github.com/dgrijalva/jwt-go"
+	_ "github.com/joho/godotenv/autoload"
 )
 
-const SECRET_KEY = "TODO: use_env_later"
+var SECRET_KEY = os.Getenv("JWT_SECRET_KEY")
 
 type JWTClaims struct {
 	jwt.MapClaims
