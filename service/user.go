@@ -8,6 +8,7 @@ import (
 	"net/http"
 
 	db "github.com/nemo984/money-app-api/db/sqlc"
+	"golang.org/x/crypto/bcrypt"
 )
 
 var (
@@ -53,11 +54,18 @@ func (s *service) CreateUser(ctx context.Context, args db.CreateUserParams) (db.
 	}
 	if err == nil {
 		return db.User{}, AppError{
-			StatusCode: http.StatusInternalServerError,
+			StatusCode: http.StatusConflict,
 			Err:        errors.New("username already taken"),
 		}
 	}
+	
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(args.Password), 4)
+	if err != nil {
+		log.Println("[error] bcrypt hashing pwd:", err.Error())
+		return db.User{}, err
+	}
 
+	args.Password = string(hashedPassword)
 	log.Printf("Creating User %#v\n", args)
 	user, err := s.db.CreateUser(ctx, args)
 	if err != nil {
@@ -74,7 +82,7 @@ func (s *service) LoginUser(ctx context.Context, username, password string) (tok
 		return "", err
 	}
 	//comparing hashed ones
-	if user.Password != password {
+	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password)); err != nil {
 		return "", AppError{
 			StatusCode: http.StatusUnauthorized,
 			Err:        errors.New("incorrect password"),
