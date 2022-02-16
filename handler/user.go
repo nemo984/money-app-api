@@ -4,13 +4,10 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
 	db "github.com/nemo984/money-app-api/db/sqlc"
 	"github.com/nemo984/money-app-api/service"
 )
-
-const SECRET_KEY = "TODO: use_env_later"
 
 //TODO: validator
 type usernamePasswordRequest struct {
@@ -36,19 +33,10 @@ func (s *Server) createUserToken(c *gin.Context) {
 		return
 	}
 
-	userID, err := s.service.LoginUser(c, req.Username, req.Password)
+	token, err := s.service.LoginUser(c, req.Username, req.Password)
 	if err != nil {
 		handleError(c, err)
 		return
-	}
-
-	claims := JWTClaims{
-		UserID: userID,
-	}
-	at := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	token, err := at.SignedString([]byte(SECRET_KEY))
-	if err != nil {
-		handleError(c, err)
 	}
 
 	c.JSON(http.StatusOK, gin.H{
@@ -78,7 +66,7 @@ func (s *Server) createUser(c *gin.Context) {
 }
 
 func (s *Server) getUser(c *gin.Context) {
-	userPayload := c.MustGet(authorizationPayload).(*JWTClaims)
+	userPayload := c.MustGet(authorizationPayload).(service.JWTClaims)
 	user, err := s.service.GetUser(c, userPayload.UserID)
 	if err != nil {
 		handleError(c, err)
@@ -89,7 +77,7 @@ func (s *Server) getUser(c *gin.Context) {
 }
 
 func (s *Server) updateUser(c *gin.Context) {
-	userPayload := c.MustGet(authorizationPayload).(*JWTClaims)
+	userPayload := c.MustGet(authorizationPayload).(service.JWTClaims)
 	var req updateUserRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, errorResponse(err))
@@ -113,7 +101,7 @@ func (s *Server) updateUser(c *gin.Context) {
 }
 
 func (s *Server) deleteUser(c *gin.Context) {
-	userPayload := c.MustGet(authorizationPayload).(*JWTClaims)
+	userPayload := c.MustGet(authorizationPayload).(service.JWTClaims)
 	err := s.service.DeleteUser(c, userPayload.UserID)
 	if err != nil {
 		handleError(c, err)

@@ -9,7 +9,7 @@ import (
 type Service interface {
 	GetUser(context.Context, int32) (db.User, error)
 	CreateUser(context.Context, db.CreateUserParams) (db.User, error)
-	LoginUser(ctx context.Context, username string, password string) (int32, error)
+	LoginUser(ctx context.Context, username string, password string) (token string, err error)
 	DeleteUser(context.Context, int32) error
 	UpdateUser(context.Context, UpdateUserParams) (db.User, error)
 }
