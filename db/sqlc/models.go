@@ -82,7 +82,7 @@ type Income struct {
 	UserID       int32          `json:"user_id"`
 }
 
-type IncomesType struct {
+type IncomeType struct {
 	IncomeTypeID int32  `json:"income_type_id"`
 	Name         string `json:"name"`
 }

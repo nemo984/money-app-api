@@ -48,11 +48,11 @@ func (q *Queries) CreateIncome(ctx context.Context, arg CreateIncomeParams) (Inc
 
 const deleteIncome = `-- name: DeleteIncome :exec
 DELETE FROM incomes
-WHERE user_id = $1
+WHERE income_id = $1
 `
 
-func (q *Queries) DeleteIncome(ctx context.Context, userID int32) error {
-	_, err := q.db.ExecContext(ctx, deleteIncome, userID)
+func (q *Queries) DeleteIncome(ctx context.Context, incomeID int32) error {
+	_, err := q.db.ExecContext(ctx, deleteIncome, incomeID)
 	return err
 }
 

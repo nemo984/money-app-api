@@ -1,6 +1,7 @@
 package service
 
 import (
+	"context"
 	"errors"
 	"net/http"
 	"os"
@@ -31,7 +32,7 @@ func CreateToken(userID int32) (string, error) {
 	return token, nil
 }
 
-func VerifyToken(token string) (JWTClaims, error) {
+func (s *service) VerifyToken(ctx context.Context, token string) (JWTClaims, error) {
 	payload, err := jwt.ParseWithClaims(token, &JWTClaims{}, func(token *jwt.Token) (interface{}, error) {
 		return []byte(SECRET_KEY), nil
 	})
@@ -49,5 +50,10 @@ func VerifyToken(token string) (JWTClaims, error) {
 			Err:        errors.New("jwt claims mismatch"),
 		}
 	}
+
+	if _, err = s.GetUser(ctx, claims.UserID); errors.Is(err, ErrUserNotFound) {
+		return JWTClaims{}, err
+	}
+
 	return *claims, nil
 }

@@ -28,7 +28,7 @@ func NewServer(service service.Service) *Server {
 
 	userRoute := apiRoute.Group("/me")
 	{
-		userRoute.Use(authenticatedToken())
+		userRoute.Use(server.authenticatedToken())
 		userRoute.GET("", server.getUser)
 		userRoute.PATCH("", server.updateUser)
 		userRoute.DELETE("", server.deleteUser)
@@ -58,6 +58,11 @@ func NewServer(service service.Service) *Server {
 	categoriesRoute := apiRoute.Group("/categories")
 	{
 		categoriesRoute.GET("", server.getCategories)
+	}
+
+	incomeTypesRoute := apiRoute.Group("/income-types")
+	{
+		incomeTypesRoute.GET("", server.getIncomeTypes)
 	}
 
 	server.router = router

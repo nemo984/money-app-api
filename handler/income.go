@@ -21,9 +21,9 @@ func (s *Server) getIncomes(c *gin.Context) {
 }
 
 type createIncomeRequest struct {
-	IncomeTypeID int32  `json:"income_type_id"`
+	IncomeTypeID int32  `json:"income_type_id" binding:"required"`
 	Description  string `json:"description"`
-	Amount       string `json:"amount"`
+	Amount       string `json:"amount" binding:"required"`
 	// Frequency    DateFrequency  `json:"frequency"`` later
 }
 
@@ -72,4 +72,14 @@ func (s *Server) deleteIncome(c *gin.Context) {
 	}
 
 	c.Status(http.StatusNoContent)
+}
+
+func (s *Server) getIncomeTypes(c *gin.Context) {
+	types, err := s.service.GetIncomeTypes(c)
+	if err != nil {
+		handleError(c, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, types)
 }

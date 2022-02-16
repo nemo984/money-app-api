@@ -45,7 +45,7 @@ CREATE TABLE "incomes" (
   "user_id" int NOT NULL
 );
 
-CREATE TABLE "incomes_types" (
+CREATE TABLE "income_types" (
   "income_type_id" serial PRIMARY KEY,
   "name" varchar(20) UNIQUE NOT NULL
 );
@@ -73,7 +73,7 @@ ALTER TABLE "expenses" ADD FOREIGN KEY ("category_id") REFERENCES "categories" (
 
 ALTER TABLE "expenses" ADD FOREIGN KEY ("user_id") REFERENCES "users" ("user_id");
 
-ALTER TABLE "incomes" ADD FOREIGN KEY ("income_type_id") REFERENCES "incomes_types" ("income_type_id");
+ALTER TABLE "incomes" ADD FOREIGN KEY ("income_type_id") REFERENCES "income_types" ("income_type_id");
 
 ALTER TABLE "incomes" ADD FOREIGN KEY ("user_id") REFERENCES "users" ("user_id");
 

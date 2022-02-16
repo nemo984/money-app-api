@@ -10,6 +10,7 @@ type Service interface {
 	GetUser(context.Context, int32) (db.User, error)
 	CreateUser(context.Context, db.CreateUserParams) (db.User, error)
 	LoginUser(ctx context.Context, username string, password string) (token string, err error)
+	VerifyToken(ctx context.Context, token string) (JWTClaims, error)
 	DeleteUser(context.Context, int32) error
 	UpdateUser(context.Context, UpdateUserParams) (db.User, error)
 
@@ -28,6 +29,10 @@ type Service interface {
 	GetIncomes(ctx context.Context, userID int32) ([]db.Income, error)
 	CreateIncome(ctx context.Context, args db.CreateIncomeParams) (db.Income, error)
 	DeleteIncome(ctx context.Context, userID, incomeID int32) error
+
+	GetIncomeTypes(ctx context.Context) ([]db.IncomeType, error)
+	CreateIncomeType(ctx context.Context, name string) (db.IncomeType, error)
+	DeleteIncomeType(ctx context.Context, id int32) error
 }
 
 type service struct {

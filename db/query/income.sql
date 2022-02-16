@@ -16,4 +16,4 @@ RETURNING *;
 
 -- name: DeleteIncome :exec
 DELETE FROM incomes
-WHERE user_id = $1;
+WHERE income_id = $1;

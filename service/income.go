@@ -47,5 +47,5 @@ func (s *service) DeleteIncome(ctx context.Context, userID, incomeID int32) erro
 		}
 	}
 
-	return s.db.DeleteExpense(ctx, incomeID)
+	return s.db.DeleteIncome(ctx, incomeID)
 }

@@ -16,7 +16,7 @@ const (
 	authorizationPayload = "payload"
 )
 
-func authenticatedToken() gin.HandlerFunc {
+func (s *Server) authenticatedToken() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		authHeader := c.GetHeader(authorizationHeader)
 		if len(authHeader) == 0 {
@@ -39,7 +39,7 @@ func authenticatedToken() gin.HandlerFunc {
 			return
 		}
 
-		claims, err := service.VerifyToken(fields[1])
+		claims, err := s.service.VerifyToken(c, fields[1])
 		if err != nil {
 			handleAbortError(c, err)
 			return
