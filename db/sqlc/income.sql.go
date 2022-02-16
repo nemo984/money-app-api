@@ -56,6 +56,26 @@ func (q *Queries) DeleteIncome(ctx context.Context, userID int32) error {
 	return err
 }
 
+const getIncome = `-- name: GetIncome :one
+SELECT income_id, income_type_id, description, amount, created_at, frequency, user_id FROM incomes
+WHERE income_id = $1
+`
+
+func (q *Queries) GetIncome(ctx context.Context, incomeID int32) (Income, error) {
+	row := q.db.QueryRowContext(ctx, getIncome, incomeID)
+	var i Income
+	err := row.Scan(
+		&i.IncomeID,
+		&i.IncomeTypeID,
+		&i.Description,
+		&i.Amount,
+		&i.CreatedAt,
+		&i.Frequency,
+		&i.UserID,
+	)
+	return i, err
+}
+
 const getIncomes = `-- name: GetIncomes :many
 SELECT income_id, income_type_id, description, amount, created_at, frequency, user_id FROM incomes
 WHERE user_id = $1

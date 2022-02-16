@@ -24,6 +24,7 @@ type Querier interface {
 	GetCategories(ctx context.Context) ([]Category, error)
 	GetExpense(ctx context.Context, expenseID int32) (Expense, error)
 	GetExpenses(ctx context.Context, userID int32) ([]Expense, error)
+	GetIncome(ctx context.Context, incomeID int32) (Income, error)
 	GetIncomes(ctx context.Context, userID int32) ([]Income, error)
 	GetNotifications(ctx context.Context, userID int32) ([]Notification, error)
 	GetUser(ctx context.Context, username string) (User, error)

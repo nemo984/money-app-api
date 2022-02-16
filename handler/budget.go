@@ -22,9 +22,9 @@ func (s *Server) getBudgets(c *gin.Context) {
 }
 
 type createBudgetRequest struct {
-	CategoryID int32        `json:"category_id" binding:"required"`
-	Amount     string       `json:"amount" binding:"required"`
-	Days    int `json:"days" binding:"required"`
+	CategoryID int32  `json:"category_id" binding:"required"`
+	Amount     string `json:"amount" binding:"required"`
+	Days       int    `json:"days" binding:"required"`
 }
 
 func (s *Server) createBudget(c *gin.Context) {
@@ -40,7 +40,7 @@ func (s *Server) createBudget(c *gin.Context) {
 		CategoryID: req.CategoryID,
 		Amount:     req.Amount,
 		EndDate: sql.NullTime{
-			Time: time.Now().AddDate(0, 0, req.Days),
+			Time:  time.Now().AddDate(0, 0, req.Days),
 			Valid: true,
 		},
 	}
