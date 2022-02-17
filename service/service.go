@@ -13,6 +13,7 @@ type Service interface {
 	VerifyToken(ctx context.Context, token string) (JWTClaims, error)
 	DeleteUser(context.Context, int32) error
 	UpdateUser(context.Context, UpdateUserParams) (db.User, error)
+	UpdateUserPicture(context.Context, db.UpdateUserPictureParams) (db.User, error)
 
 	GetCategories(context.Context) ([]db.Category, error)
 	CreateCategory(context.Context, string) (db.Category, error)

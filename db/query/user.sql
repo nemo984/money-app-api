@@ -32,6 +32,12 @@ SET
 WHERE user_id = @user_id
 RETURNING *;
 
+-- name: UpdateUserPicture :one
+UPDATE users
+SET profile_url = $2
+WHERE user_id = $1
+RETURNING *;
+
 -- name: DeleteUser :exec
 DELETE FROM users
 WHERE user_id = $1;

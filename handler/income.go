@@ -62,7 +62,7 @@ func (s *Server) deleteIncome(c *gin.Context) {
 	userPayload := c.MustGet(authorizationPayload).(service.JWTClaims)
 	var uri deleteIncomeURI
 	if err := c.ShouldBindUri(&uri); err != nil {
-		handleError(c, err)
+		c.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
 

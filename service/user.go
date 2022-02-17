@@ -150,3 +150,12 @@ func (s *service) UpdateUser(ctx context.Context, args UpdateUserParams) (db.Use
 	}
 	return user, nil
 }
+
+func (s *service) UpdateUserPicture(ctx context.Context, args db.UpdateUserPictureParams) (db.User, error) {
+	user, err := s.db.UpdateUserPicture(ctx, args)
+	if err != nil {
+		return db.User{}, nil
+	}
+
+	return user, nil
+}

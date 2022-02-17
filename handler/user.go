@@ -1,10 +1,14 @@
 package handler
 
 import (
+	"database/sql"
+	"fmt"
 	"log"
 	"net/http"
+	"path/filepath"
 
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 	db "github.com/nemo984/money-app-api/db/sqlc"
 	"github.com/nemo984/money-app-api/service"
 )
@@ -83,14 +87,48 @@ func (s *Server) updateUser(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
-	log.Printf("%#v\n", req)
 
 	user, err := s.service.UpdateUser(c, service.UpdateUserParams{
-		UserID:     userPayload.UserID,
-		Username:   req.Username,
-		Name:       req.Name,
-		Password:   req.Password,
-		ProfileUrl: req.ProfileURL,
+		UserID:   userPayload.UserID,
+		Username: req.Username,
+		Name:     req.Name,
+		Password: req.Password,
+	})
+	if err != nil {
+		handleError(c, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, user)
+}
+
+const imagesFilePath = "images/user-profile-pics/"
+
+func (s *Server) uploadProfilePicture(c *gin.Context) {
+	userPayload := c.MustGet(authorizationPayload).(service.JWTClaims)
+	file, err := c.FormFile("file")
+	if err != nil {
+		err := fmt.Errorf("get form err: %s", err.Error())
+		log.Println(err)
+		c.JSON(http.StatusBadRequest, errorResponse(err))
+		return
+	}
+	//TODO: validate extension, resize image?
+	newFilename := uuid.New().String() + filepath.Ext(file.Filename)
+	filepath := imagesFilePath + newFilename
+	if err := c.SaveUploadedFile(file, filepath); err != nil {
+		err := fmt.Errorf("upload file err: %s", err.Error())
+		log.Println(err)
+		c.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+
+	user, err := s.service.UpdateUserPicture(c, db.UpdateUserPictureParams{
+		UserID: userPayload.UserID,
+		ProfileUrl: sql.NullString{
+			String: filepath,
+			Valid:  true,
+		},
 	})
 	if err != nil {
 		handleError(c, err)

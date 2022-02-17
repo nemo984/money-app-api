@@ -17,6 +17,8 @@ func NewServer(service service.Service) *Server {
 	router := gin.Default()
 	apiRoute := router.Group("/api")
 
+	apiRoute.StaticFS("/images/user-profile-pics", http.Dir("./images/user-profile-pics"))
+
 	apiRoute.GET("/google-login", server.GoogleLogin)
 	apiRoute.GET("/google-callback", server.GoogleCallback)
 
@@ -32,6 +34,7 @@ func NewServer(service service.Service) *Server {
 		userRoute.GET("", server.getUser)
 		userRoute.PATCH("", server.updateUser)
 		userRoute.DELETE("", server.deleteUser)
+		userRoute.PUT("/picture", server.uploadProfilePicture)
 
 		expensesRoute := userRoute.Group("/expenses")
 		{
