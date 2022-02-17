@@ -18,28 +18,36 @@ const (
 
 func (s *Server) authenticatedToken() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		authHeader := c.GetHeader(authorizationHeader)
-		if len(authHeader) == 0 {
-			err := errors.New("authorization header is missing")
-			handleAbortError(c, err)
-			return
+		var jwtToken string
+		//check cookie first
+		if cookie, err := c.Request.Cookie(JWTTokenCookieKey); err == nil {
+			jwtToken = cookie.Value
+		} else {
+			authHeader := c.GetHeader(authorizationHeader)
+			if len(authHeader) == 0 {
+				err := errors.New("authorization header is missing")
+				handleAbortError(c, err)
+				return
+			}
+
+			fields := strings.Fields(authHeader)
+			if len(fields) < 2 {
+				err := errors.New("invalid auth header format")
+				handleAbortError(c, err)
+				return
+			}
+
+			authType := strings.ToLower(fields[0])
+			if authType != authorizationBearer {
+				err := fmt.Errorf("unsupported auth type, must be %s", authorizationBearer)
+				handleAbortError(c, err)
+				return
+			}
+
+			jwtToken = fields[1]
 		}
 
-		fields := strings.Fields(authHeader)
-		if len(fields) < 2 {
-			err := errors.New("invalid auth header format")
-			handleAbortError(c, err)
-			return
-		}
-
-		authType := strings.ToLower(fields[0])
-		if authType != authorizationBearer {
-			err := fmt.Errorf("unsupported auth type, must be %s", authorizationBearer)
-			handleAbortError(c, err)
-			return
-		}
-
-		claims, err := s.service.VerifyToken(c, fields[1])
+		claims, err := s.service.VerifyToken(c, jwtToken)
 		if err != nil {
 			handleAbortError(c, err)
 			return

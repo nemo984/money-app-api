@@ -27,6 +27,8 @@ var (
 	}
 	// Some random string, random for each request
 	oauthStateString = "random"
+
+	JWTTokenCookieKey = "jwt-token"
 )
 
 type UserInfo struct {
@@ -95,7 +97,11 @@ func (s *Server) GoogleCallback(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{
-		"token": jwtToken,
-	})
+	cookie := &http.Cookie{
+		Name:     "jwt-token",
+		Value:    jwtToken,
+		Path:     "/api/me",
+		HttpOnly: true,
+	}
+	http.SetCookie(c.Writer, cookie)
 }
