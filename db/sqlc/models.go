@@ -93,7 +93,7 @@ type Notification struct {
 	Description    sql.NullString       `json:"description"`
 	Type           string               `json:"type"`
 	Priority       NotificationPriority `json:"priority"`
-	Read           sql.NullBool         `json:"read"`
+	Read           bool                 `json:"read"`
 	CreatedAt      sql.NullTime         `json:"created_at"`
 }
 

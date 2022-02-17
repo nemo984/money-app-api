@@ -54,6 +54,26 @@ func (q *Queries) DeleteNotification(ctx context.Context, userID int32) error {
 	return err
 }
 
+const getNotification = `-- name: GetNotification :one
+SELECT notification_id, user_id, description, type, priority, read, created_at FROM notifications
+WHERE notification_id = $1
+`
+
+func (q *Queries) GetNotification(ctx context.Context, notificationID int32) (Notification, error) {
+	row := q.db.QueryRowContext(ctx, getNotification, notificationID)
+	var i Notification
+	err := row.Scan(
+		&i.NotificationID,
+		&i.UserID,
+		&i.Description,
+		&i.Type,
+		&i.Priority,
+		&i.Read,
+		&i.CreatedAt,
+	)
+	return i, err
+}
+
 const getNotifications = `-- name: GetNotifications :many
 SELECT notification_id, user_id, description, type, priority, read, created_at FROM notifications
 WHERE user_id = $1
@@ -98,8 +118,8 @@ RETURNING notification_id, user_id, description, type, priority, read, created_a
 `
 
 type UpdateNotificationParams struct {
-	NotificationID int32        `json:"notification_id"`
-	Read           sql.NullBool `json:"read"`
+	NotificationID int32 `json:"notification_id"`
+	Read           bool  `json:"read"`
 }
 
 func (q *Queries) UpdateNotification(ctx context.Context, arg UpdateNotificationParams) (Notification, error) {
@@ -115,4 +135,47 @@ func (q *Queries) UpdateNotification(ctx context.Context, arg UpdateNotification
 		&i.CreatedAt,
 	)
 	return i, err
+}
+
+const updateNotifications = `-- name: UpdateNotifications :many
+UPDATE notifications
+SET read = $2
+WHERE user_id = $1
+RETURNING notification_id, user_id, description, type, priority, read, created_at
+`
+
+type UpdateNotificationsParams struct {
+	UserID int32 `json:"user_id"`
+	Read   bool  `json:"read"`
+}
+
+func (q *Queries) UpdateNotifications(ctx context.Context, arg UpdateNotificationsParams) ([]Notification, error) {
+	rows, err := q.db.QueryContext(ctx, updateNotifications, arg.UserID, arg.Read)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Notification
+	for rows.Next() {
+		var i Notification
+		if err := rows.Scan(
+			&i.NotificationID,
+			&i.UserID,
+			&i.Description,
+			&i.Type,
+			&i.Priority,
+			&i.Read,
+			&i.CreatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
 }

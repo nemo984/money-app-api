@@ -2,6 +2,10 @@
 SELECT * FROM notifications
 WHERE user_id = $1;
 
+-- name: GetNotification :one
+SELECT * FROM notifications
+WHERE notification_id = $1;
+
 -- name: CreateNotification :one
 INSERT INTO notifications (
   user_id, description, type, priority
@@ -15,6 +19,12 @@ UPDATE notifications
 SET read = $2
 WHERE notification_id = $1
 RETURNING *;
+
+-- name: UpdateNotifications :many
+UPDATE notifications
+SET read = $2
+WHERE user_id = $1
+RETURNING *; 
 
 -- name: DeleteNotification :exec
 DELETE FROM notifications

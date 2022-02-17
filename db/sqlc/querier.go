@@ -29,11 +29,13 @@ type Querier interface {
 	GetIncome(ctx context.Context, incomeID int32) (Income, error)
 	GetIncomeTypes(ctx context.Context) ([]IncomeType, error)
 	GetIncomes(ctx context.Context, userID int32) ([]Income, error)
+	GetNotification(ctx context.Context, notificationID int32) (Notification, error)
 	GetNotifications(ctx context.Context, userID int32) ([]Notification, error)
 	GetUser(ctx context.Context, username string) (User, error)
 	GetUserByID(ctx context.Context, userID int32) (User, error)
 	UpdateBudget(ctx context.Context, arg UpdateBudgetParams) error
 	UpdateNotification(ctx context.Context, arg UpdateNotificationParams) (Notification, error)
+	UpdateNotifications(ctx context.Context, arg UpdateNotificationsParams) ([]Notification, error)
 	UpdateUser(ctx context.Context, arg UpdateUserParams) (User, error)
 }
 

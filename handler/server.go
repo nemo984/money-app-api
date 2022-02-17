@@ -53,6 +53,13 @@ func NewServer(service service.Service) *Server {
 			incomesRoute.POST("", server.createIncome)
 			incomesRoute.DELETE("/:id", server.deleteIncome)
 		}
+
+		notificationsRoute := userRoute.Group("/notifications")
+		{
+			notificationsRoute.GET("", server.getNotifications)
+			notificationsRoute.PATCH("", server.updateAllNotifications)
+			notificationsRoute.PATCH("/:id", server.updateNotification)
+		}
 	}
 
 	categoriesRoute := apiRoute.Group("/categories")

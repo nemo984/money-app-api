@@ -65,7 +65,7 @@ CREATE TABLE "notifications" (
   "description" text,
   "type" varchar NOT NULL,
   "priority" notification_priority DEFAULT 'medium',
-  "read" boolean DEFAULT false,
+  "read" boolean NOT NULL DEFAULT false,
   "created_at" timestamptz DEFAULT (now())
 );
 
