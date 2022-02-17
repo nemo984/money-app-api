@@ -11,7 +11,7 @@ import (
 )
 
 func (s *Server) getBudgets(c *gin.Context) {
-	userPayload := c.MustGet(authorizationPayload).(service.JWTClaims)
+	userPayload := c.MustGet(AuthorizationPayload).(service.JWTClaims)
 	budgets, err := s.service.GetBudgets(c, userPayload.UserID)
 	if err != nil {
 		handleError(c, err)
@@ -28,7 +28,7 @@ type createBudgetRequest struct {
 }
 
 func (s *Server) createBudget(c *gin.Context) {
-	userPayload := c.MustGet(authorizationPayload).(service.JWTClaims)
+	userPayload := c.MustGet(AuthorizationPayload).(service.JWTClaims)
 	var req createBudgetRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, errorResponse(err))
@@ -58,7 +58,7 @@ type deleteBudgetURI struct {
 }
 
 func (s *Server) deleteBudget(c *gin.Context) {
-	userPayload := c.MustGet(authorizationPayload).(service.JWTClaims)
+	userPayload := c.MustGet(AuthorizationPayload).(service.JWTClaims)
 	var uri deleteBudgetURI
 	if err := c.ShouldBindUri(&uri); err != nil {
 		handleError(c, err)

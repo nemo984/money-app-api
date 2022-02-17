@@ -10,7 +10,7 @@ import (
 )
 
 func (s *Server) getExpenses(c *gin.Context) {
-	userPayload := c.MustGet(authorizationPayload).(service.JWTClaims)
+	userPayload := c.MustGet(AuthorizationPayload).(service.JWTClaims)
 	expenses, err := s.service.GetExpenses(c, userPayload.UserID)
 	if err != nil {
 		handleError(c, err)
@@ -28,7 +28,7 @@ type createExpenseRequest struct {
 }
 
 func (s *Server) createExpense(c *gin.Context) {
-	userPayload := c.MustGet(authorizationPayload).(service.JWTClaims)
+	userPayload := c.MustGet(AuthorizationPayload).(service.JWTClaims)
 	var req createExpenseRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, errorResponse(err))
@@ -59,7 +59,7 @@ type deleteExpenseURI struct {
 }
 
 func (s *Server) deleteExpense(c *gin.Context) {
-	userPayload := c.MustGet(authorizationPayload).(service.JWTClaims)
+	userPayload := c.MustGet(AuthorizationPayload).(service.JWTClaims)
 	var uri deleteExpenseURI
 	if err := c.ShouldBindUri(&uri); err != nil {
 		handleError(c, err)

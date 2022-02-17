@@ -10,7 +10,7 @@ import (
 )
 
 func (s *Server) getIncomes(c *gin.Context) {
-	userPayload := c.MustGet(authorizationPayload).(service.JWTClaims)
+	userPayload := c.MustGet(AuthorizationPayload).(service.JWTClaims)
 	incomes, err := s.service.GetIncomes(c, userPayload.UserID)
 	if err != nil {
 		handleError(c, err)
@@ -28,7 +28,7 @@ type createIncomeRequest struct {
 }
 
 func (s *Server) createIncome(c *gin.Context) {
-	userPayload := c.MustGet(authorizationPayload).(service.JWTClaims)
+	userPayload := c.MustGet(AuthorizationPayload).(service.JWTClaims)
 	var req createIncomeRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, errorResponse(err))
@@ -59,7 +59,7 @@ type deleteIncomeURI struct {
 }
 
 func (s *Server) deleteIncome(c *gin.Context) {
-	userPayload := c.MustGet(authorizationPayload).(service.JWTClaims)
+	userPayload := c.MustGet(AuthorizationPayload).(service.JWTClaims)
 	var uri deleteIncomeURI
 	if err := c.ShouldBindUri(&uri); err != nil {
 		c.JSON(http.StatusBadRequest, errorResponse(err))

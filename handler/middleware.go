@@ -13,7 +13,7 @@ import (
 const (
 	authorizationHeader  = "Authorization"
 	authorizationBearer  = "bearer"
-	authorizationPayload = "payload"
+	AuthorizationPayload = "payload"
 )
 
 func (s *Server) authenticatedToken() gin.HandlerFunc {
@@ -53,7 +53,7 @@ func (s *Server) authenticatedToken() gin.HandlerFunc {
 			return
 		}
 
-		c.Set(authorizationPayload, claims)
+		c.Set(AuthorizationPayload, claims)
 		c.Next()
 	}
 }

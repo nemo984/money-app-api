@@ -70,7 +70,7 @@ func (s *Server) createUser(c *gin.Context) {
 }
 
 func (s *Server) getUser(c *gin.Context) {
-	userPayload := c.MustGet(authorizationPayload).(service.JWTClaims)
+	userPayload := c.MustGet(AuthorizationPayload).(service.JWTClaims)
 	user, err := s.service.GetUser(c, userPayload.UserID)
 	if err != nil {
 		handleError(c, err)
@@ -81,7 +81,7 @@ func (s *Server) getUser(c *gin.Context) {
 }
 
 func (s *Server) updateUser(c *gin.Context) {
-	userPayload := c.MustGet(authorizationPayload).(service.JWTClaims)
+	userPayload := c.MustGet(AuthorizationPayload).(service.JWTClaims)
 	var req updateUserRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, errorResponse(err))
@@ -105,7 +105,7 @@ func (s *Server) updateUser(c *gin.Context) {
 const imagesFilePath = "images/user-profile-pics/"
 
 func (s *Server) uploadProfilePicture(c *gin.Context) {
-	userPayload := c.MustGet(authorizationPayload).(service.JWTClaims)
+	userPayload := c.MustGet(AuthorizationPayload).(service.JWTClaims)
 	file, err := c.FormFile("file")
 	if err != nil {
 		err := fmt.Errorf("get form err: %s", err.Error())
@@ -139,7 +139,7 @@ func (s *Server) uploadProfilePicture(c *gin.Context) {
 }
 
 func (s *Server) deleteUser(c *gin.Context) {
-	userPayload := c.MustGet(authorizationPayload).(service.JWTClaims)
+	userPayload := c.MustGet(AuthorizationPayload).(service.JWTClaims)
 	err := s.service.DeleteUser(c, userPayload.UserID)
 	if err != nil {
 		handleError(c, err)
