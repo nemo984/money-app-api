@@ -5,6 +5,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/nemo984/money-app-api/service"
+	"github.com/nemo984/money-app-api/util"
 )
 
 type Server struct {
@@ -17,7 +18,7 @@ func NewServer(service service.Service) *Server {
 	router := gin.Default()
 	apiRoute := router.Group("/api")
 
-	apiRoute.StaticFS("/images/user-profile-pics", http.Dir("./images/user-profile-pics"))
+	apiRoute.StaticFS("/images/user-profile-pics", util.Fs{Dir: http.Dir("./images/user-profile-pics")})
 
 	apiRoute.GET("/google-login", server.GoogleLogin)
 	apiRoute.GET("/google-callback", server.GoogleCallback)
