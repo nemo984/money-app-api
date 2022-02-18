@@ -13,5 +13,4 @@ test:
 
 c:
 	golangci-lint run
-	errcheck ./...
 

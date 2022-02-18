@@ -4,18 +4,25 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	db "github.com/nemo984/money-app-api/db/sqlc"
 	"github.com/nemo984/money-app-api/notification"
 	"github.com/nemo984/money-app-api/service"
 	"github.com/nemo984/money-app-api/util"
 )
 
 type Server struct {
-	hub     *notification.Hub
+	hub     NotificationHub
 	service service.Service
 	router  *gin.Engine
 }
 
-func NewServer(service service.Service, hub *notification.Hub) *Server {
+type NotificationHub interface {
+	Notify(userID int32, notification db.Notification)
+	Register(user *notification.User)
+	Unregister(user *notification.User)
+}
+
+func NewServer(service service.Service, hub NotificationHub) *Server {
 	server := &Server{service: service, hub: hub}
 	router := gin.Default()
 	apiRoute := router.Group("/api")
@@ -31,7 +38,7 @@ func NewServer(service service.Service, hub *notification.Hub) *Server {
 		users.POST("/token", server.createUserToken)
 	}
 
-	apiRoute.GET("/notifications-ws", server.wsNotificationHandler(hub))
+	apiRoute.GET("/notifications-ws", server.wsNotificationHandler)
 
 	userRoute := apiRoute.Group("/me")
 	{

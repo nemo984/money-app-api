@@ -17,8 +17,7 @@ var upgrader = websocket.Upgrader{
 	WriteBufferSize: 1024,
 }
 
-func (s *Server) wsNotificationHandler(hub *notification.Hub) gin.HandlerFunc {
-	return func(c *gin.Context) {
+func (s *Server) wsNotificationHandler(c *gin.Context)  {
 		claims, err := s.service.VerifyToken(c, c.Query("token"))
 		if err != nil {
 			err := errors.New("missing or invalid jwt token")
@@ -34,9 +33,9 @@ func (s *Server) wsNotificationHandler(hub *notification.Hub) gin.HandlerFunc {
 		}
 
 		user := notification.NewUser(ws, claims.UserID)
-		hub.Register(user)
+		s.hub.Register(user)
+		defer s.hub.Unregister(user)
 		user.Listen()
-	}
 }
 
 func (s *Server) getNotifications(c *gin.Context) {

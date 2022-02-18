@@ -32,6 +32,7 @@ func (h *Hub) Run() {
 			h.users[user.userID] = user
 
 		case user := <-h.unregister:
+			log.Println("User unregister: ", user)
 			if _, ok := h.users[user.userID]; ok {
 				delete(h.users, user.userID)
 				close(user.send)
@@ -51,4 +52,8 @@ func (h *Hub) Notify(userID int32, notification db.Notification) {
 
 func (h *Hub) Register(user *User) {
 	h.register <- user
+}
+
+func (h *Hub) Unregister(user *User) {
+	h.unregister <- user
 }
