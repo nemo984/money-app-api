@@ -1,9 +1,24 @@
+// Package classification of Money Management API
+//
+// Documentation for Money Management API
+//
+// Schemes: http
+// BasePath: /api
+// Version: 1.0.0
+//
+// Consumes:
+// - application/json
+//
+// Produces:
+// -application/json
+// swagger:meta
 package handler
 
 import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/go-openapi/runtime/middleware"
 	db "github.com/nemo984/money-app-api/db/sqlc"
 	"github.com/nemo984/money-app-api/notification"
 	"github.com/nemo984/money-app-api/service"
@@ -26,6 +41,12 @@ func NewServer(service service.Service, hub NotificationHub) *Server {
 	server := &Server{service: service, hub: hub}
 	router := gin.Default()
 	apiRoute := router.Group("/api")
+
+	//documentation
+	opts := middleware.RedocOpts{SpecURL: "/swagger.yaml", Title: "Money App API Documentation"}
+	sh := middleware.Redoc(opts, nil)
+	router.StaticFile("/swagger.yaml", "./docs/swagger.yaml")
+	router.GET("/docs", gin.WrapH(sh))
 
 	apiRoute.StaticFS("/images/user-profile-pics", util.Fs{Dir: http.Dir("./images/user-profile-pics")})
 

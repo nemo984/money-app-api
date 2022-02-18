@@ -1,0 +1,13 @@
+basePath: /api
+consumes:
+- application/json
+info:
+  description: Documentation for Money Management API
+  title: of Money Management API
+  version: 1.0.0
+paths: {}
+produces:
+- application/json
+schemes:
+- http
+swagger: "2.0"

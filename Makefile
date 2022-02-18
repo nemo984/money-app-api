@@ -14,3 +14,6 @@ test:
 c:
 	golangci-lint run
 
+swag:
+	swagger generate spec -o ./swagger.yaml --scan-models
+
