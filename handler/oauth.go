@@ -37,6 +37,10 @@ type UserInfo struct {
 	Picture string `json:"picture"`
 }
 
+// swagger:route GET /google-login users loginGoogle
+//Logins with google, set cookie with token
+// responses:
+//  307: redirectGoogle
 func (s *Server) GoogleLogin(c *gin.Context) {
 	url := googleOauthConfig.AuthCodeURL(oauthStateString)
 	c.Redirect(http.StatusTemporaryRedirect, url)

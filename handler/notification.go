@@ -17,6 +17,17 @@ var upgrader = websocket.Upgrader{
 	WriteBufferSize: 1024,
 }
 
+// swagger:parameters listenNotifications
+type notificationWSToken struct {
+	// Auth token for the user
+	//
+	// required: true
+	Token string `json:"token"`
+}
+
+// swagger:route GET /notifications-ws notifications listenNotifications
+// Listen for notifications
+// Schemes: ws
 func (s *Server) wsNotificationHandler(c *gin.Context) {
 	claims, err := s.service.VerifyToken(c, c.Query("token"))
 	if err != nil {
@@ -38,6 +49,24 @@ func (s *Server) wsNotificationHandler(c *gin.Context) {
 	user.Listen()
 }
 
+// A list of notifications
+// swagger:response notificationsResponse
+type notificationsResponse struct {
+	// User's notifications
+	// in:body
+	Body []db.Notification
+}
+
+// Notification
+// swagger:response notificationResponse
+type notificationResponse struct {
+	Body db.Notification
+}
+
+// swagger:route GET /me/notifications notifications listNotifications
+// Returns a list of notifications of the user
+// responses:
+//  200: notificationsResponse
 func (s *Server) getNotifications(c *gin.Context) {
 	userPayload := c.MustGet(AuthorizationPayload).(service.JWTClaims)
 	notifications, err := s.service.GetNotifications(c, userPayload.UserID)
@@ -49,10 +78,18 @@ func (s *Server) getNotifications(c *gin.Context) {
 	c.JSON(http.StatusOK, notifications)
 }
 
+// swagger:parameters updateNotification
 type notificationURI struct {
+	// The id of the notification to update
+	// in: path
+	// required: true
 	NotificationID int32 `uri:"id"`
 }
 
+// swagger:route PATCH /me/notifications/{id} notifications updateNotification
+// Set the notification to read and returns the notification
+// responses:
+//  200: notificationResponse
 func (s *Server) updateNotification(c *gin.Context) {
 	userPayload := c.MustGet(AuthorizationPayload).(service.JWTClaims)
 	var req notificationURI
@@ -73,6 +110,10 @@ func (s *Server) updateNotification(c *gin.Context) {
 	c.JSON(http.StatusOK, notification)
 }
 
+// swagger:route PATCH /me/notifications notifications updateNotifications
+// Set all user's notifications to read and returns them
+// responses:
+//  200: notificationsResponse
 func (s *Server) updateAllNotifications(c *gin.Context) {
 	userPayload := c.MustGet(AuthorizationPayload).(service.JWTClaims)
 	args := db.UpdateNotificationsParams{

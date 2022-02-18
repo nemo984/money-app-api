@@ -1,3 +1,8 @@
+up:
+	docker-compose up -d
+
+down:
+	docker-compose down
 
 db:
 	docker exec -it money-app-api_db_1 psql -U postgres 
@@ -15,5 +20,7 @@ c:
 	golangci-lint run
 
 swag:
-	swagger generate spec -o ./swagger.yaml --scan-models
+	swagger generate spec -o ./docs/swagger.yaml --scan-models
 
+doc:
+	swagger generate spec -o ./docs/swagger.yaml --scan-models && go run .

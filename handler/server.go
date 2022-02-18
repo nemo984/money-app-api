@@ -1,4 +1,4 @@
-// Package classification of Money Management API
+// Package classification Money Management API
 //
 // Documentation for Money Management API
 //

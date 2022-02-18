@@ -1,13 +1,639 @@
 basePath: /api
 consumes:
 - application/json
+definitions:
+  Budget:
+    properties:
+      amount:
+        type: string
+        x-go-name: Amount
+      budget_id:
+        format: int32
+        type: integer
+        x-go-name: BudgetID
+      category_id:
+        format: int32
+        type: integer
+        x-go-name: CategoryID
+      end_date:
+        $ref: '#/definitions/NullTime'
+      start_date:
+        $ref: '#/definitions/NullTime'
+      user_id:
+        format: int32
+        type: integer
+        x-go-name: UserID
+    type: object
+    x-go-package: github.com/nemo984/money-app-api/db/sqlc
+  Category:
+    properties:
+      category_id:
+        format: int32
+        type: integer
+        x-go-name: CategoryID
+      name:
+        type: string
+        x-go-name: Name
+    type: object
+    x-go-package: github.com/nemo984/money-app-api/db/sqlc
+  DateFrequency:
+    type: string
+    x-go-package: github.com/nemo984/money-app-api/db/sqlc
+  Expense:
+    properties:
+      amount:
+        type: string
+        x-go-name: Amount
+      category_id:
+        format: int32
+        type: integer
+        x-go-name: CategoryID
+      created_at:
+        $ref: '#/definitions/NullTime'
+      expense_id:
+        format: int32
+        type: integer
+        x-go-name: ExpenseID
+      frequency:
+        $ref: '#/definitions/DateFrequency'
+      note:
+        $ref: '#/definitions/NullString'
+      user_id:
+        format: int32
+        type: integer
+        x-go-name: UserID
+    type: object
+    x-go-package: github.com/nemo984/money-app-api/db/sqlc
+  IncomeType:
+    properties:
+      income_type_id:
+        format: int32
+        type: integer
+        x-go-name: IncomeTypeID
+      name:
+        type: string
+        x-go-name: Name
+    type: object
+    x-go-package: github.com/nemo984/money-app-api/db/sqlc
+  Notification:
+    properties:
+      created_at:
+        $ref: '#/definitions/NullTime'
+      description:
+        $ref: '#/definitions/NullString'
+      notification_id:
+        format: int32
+        type: integer
+        x-go-name: NotificationID
+      priority:
+        $ref: '#/definitions/NotificationPriority'
+      read:
+        type: boolean
+        x-go-name: Read
+      type:
+        type: string
+        x-go-name: Type
+      user_id:
+        format: int32
+        type: integer
+        x-go-name: UserID
+    type: object
+    x-go-package: github.com/nemo984/money-app-api/db/sqlc
+  NotificationPriority:
+    type: string
+    x-go-package: github.com/nemo984/money-app-api/db/sqlc
+  NullString:
+    description: |-
+      var s NullString
+      err := db.QueryRow("SELECT name FROM foo WHERE id=?", id).Scan(&s)
+      ...
+      if s.Valid {
+      use s.String
+      } else {
+      NULL value
+      }
+    properties:
+      String:
+        type: string
+      Valid:
+        type: boolean
+    title: |-
+      NullString represents a string that may be null.
+      NullString implements the Scanner interface so
+      it can be used as a scan destination:
+    type: object
+    x-go-package: database/sql
+  NullTime:
+    description: |-
+      NullTime implements the Scanner interface so
+      it can be used as a scan destination, similar to NullString.
+    properties:
+      Time:
+        format: date-time
+        type: string
+      Valid:
+        type: boolean
+    title: NullTime represents a time.Time that may be null.
+    type: object
+    x-go-package: database/sql
+  User:
+    properties:
+      created_at:
+        $ref: '#/definitions/NullTime'
+      name:
+        $ref: '#/definitions/NullString'
+      password:
+        type: string
+        x-go-name: Password
+      profile_url:
+        $ref: '#/definitions/NullString'
+      user_id:
+        format: int32
+        type: integer
+        x-go-name: UserID
+      username:
+        type: string
+        x-go-name: Username
+    type: object
+    x-go-package: github.com/nemo984/money-app-api/db/sqlc
+  createBudgetRequest:
+    properties:
+      amount:
+        description: amount of the budget
+        type: string
+        x-go-name: Amount
+      category_id:
+        description: id of a category
+        format: int32
+        type: integer
+        x-go-name: CategoryID
+      days:
+        description: Numbers of days to budget
+        format: int64
+        type: integer
+        x-go-name: Days
+    required:
+    - category_id
+    - amount
+    - days
+    type: object
+    x-go-package: github.com/nemo984/money-app-api/handler
+  createExpenseRequest:
+    properties:
+      amount:
+        description: amount of the expense
+        type: string
+        x-go-name: Amount
+      category_id:
+        description: id of a category
+        format: int32
+        type: integer
+        x-go-name: CategoryID
+      frequency:
+        $ref: '#/definitions/DateFrequency'
+      note:
+        description: note of the expense
+        type: string
+        x-go-name: Note
+    required:
+    - category_id
+    - amount
+    type: object
+    x-go-package: github.com/nemo984/money-app-api/handler
+  createIncomeRequest:
+    properties:
+      amount:
+        description: amount of the income
+        type: string
+        x-go-name: Amount
+      description:
+        description: description of for the income
+        type: string
+        x-go-name: Description
+      frequency:
+        $ref: '#/definitions/DateFrequency'
+      income_type_id:
+        description: id of the type of income
+        format: int32
+        type: integer
+        x-go-name: IncomeTypeID
+    required:
+    - income_type_id
+    - amount
+    type: object
+    x-go-package: github.com/nemo984/money-app-api/handler
+  updateUserRequest:
+    properties:
+      name:
+        type: string
+        x-go-name: Name
+      password:
+        type: string
+        x-go-name: Password
+      profile_url:
+        type: string
+        x-go-name: ProfileURL
+      username:
+        type: string
+        x-go-name: Username
+    type: object
+    x-go-package: github.com/nemo984/money-app-api/handler
+  usernamePasswordRequest:
+    properties:
+      password:
+        type: string
+        x-go-name: Password
+      username:
+        type: string
+        x-go-name: Username
+    required:
+    - username
+    - password
+    type: object
+    x-go-package: github.com/nemo984/money-app-api/handler
 info:
   description: Documentation for Money Management API
-  title: of Money Management API
+  title: Money Management API
   version: 1.0.0
-paths: {}
+paths:
+  /categories:
+    get:
+      description: Returns a list of categories
+      operationId: listCategories
+      responses:
+        "200":
+          $ref: '#/responses/categoriesResponse'
+      tags:
+      - categories
+  /google-login:
+    get:
+      description: Logins with google, set cookie with token
+      operationId: loginGoogle
+      responses:
+        "307":
+          $ref: '#/responses/redirectGoogle'
+      tags:
+      - users
+  /income-types:
+    get:
+      description: List the available income types
+      operationId: listIncomeTypes
+      responses:
+        "200":
+          $ref: '#/responses/incomeTypesResponse'
+      tags:
+      - incomes
+  /me:
+    delete:
+      description: Delete user of the auth token
+      operationId: deleteUser
+      responses:
+        "204":
+          $ref: '#/responses/noContent'
+      tags:
+      - users
+    get:
+      description: Returns user of the auth token
+      operationId: getUser
+      responses:
+        "200":
+          $ref: '#/responses/userResponse'
+      tags:
+      - users
+    patch:
+      description: Update user of the auth token with provided fields and returns
+        the user
+      operationId: updateUser
+      parameters:
+      - description: The fields to update for the user
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/updateUserRequest'
+        x-go-name: User
+      responses:
+        "200":
+          $ref: '#/responses/userResponse'
+      tags:
+      - users
+  /me/budgets:
+    get:
+      description: Returns a list of budgets of the user
+      operationId: listBudgets
+      responses:
+        "200":
+          $ref: '#/responses/budgetsResponse'
+      tags:
+      - budgets
+    post:
+      consumes:
+      - application/json
+      description: Returns the created budget
+      operationId: createBudget
+      parameters:
+      - description: The budget to create
+        in: body
+        name: budget
+        required: true
+        schema:
+          $ref: '#/definitions/createBudgetRequest'
+        x-go-name: Budget
+      produces:
+      - application/json
+      responses:
+        "201":
+          $ref: '#/responses/budgetResponse'
+        "422":
+          $ref: '#/responses/validationError'
+      tags:
+      - budgets
+  /me/budgets/{id}:
+    delete:
+      operationId: deleteBudget
+      parameters:
+      - description: The id of the budget to delete from the database
+        format: int32
+        in: path
+        name: BudgetID
+        required: true
+        type: integer
+      responses:
+        "204":
+          $ref: '#/responses/noContent'
+      tags:
+      - budgets
+  /me/expenses:
+    get:
+      description: Returns a list of expenses of the user
+      operationId: listExpenses
+      responses:
+        "200":
+          $ref: '#/responses/expensesResponse'
+      tags:
+      - expenses
+    post:
+      consumes:
+      - application/json
+      description: Returns the created expense
+      operationId: createExpense
+      parameters:
+      - description: The expense to create
+        in: body
+        name: expense
+        required: true
+        schema:
+          $ref: '#/definitions/createExpenseRequest'
+        x-go-name: Expense
+      produces:
+      - application/json
+      responses:
+        "201":
+          $ref: '#/responses/expenseResponse'
+        "422":
+          $ref: '#/responses/validationError'
+      tags:
+      - expenses
+  /me/expenses/{id}:
+    delete:
+      operationId: deleteExpense
+      parameters:
+      - description: The id of the expense to delete from the database
+        format: int32
+        in: path
+        name: ExpenseID
+        required: true
+        type: integer
+      responses:
+        "204":
+          $ref: '#/responses/noContent'
+      tags:
+      - expenses
+  /me/incomes:
+    get:
+      description: Returns a list of incomes of the user
+      operationId: listIncomes
+      responses:
+        "200":
+          $ref: '#/responses/incomesResponse'
+      tags:
+      - incomes
+    post:
+      consumes:
+      - application/json
+      description: Returns the created income
+      operationId: createIncome
+      parameters:
+      - description: The budget to create
+        in: body
+        name: income
+        required: true
+        schema:
+          $ref: '#/definitions/createIncomeRequest'
+        x-go-name: Income
+      produces:
+      - application/json
+      responses:
+        "201":
+          $ref: '#/responses/incomeResponse'
+        "422":
+          $ref: '#/responses/validationError'
+      tags:
+      - incomes
+  /me/incomes/{id}:
+    delete:
+      operationId: deleteIncome
+      parameters:
+      - description: The id of the income to delete from the database
+        format: int32
+        in: path
+        name: IncomeID
+        required: true
+        type: integer
+      responses:
+        "204":
+          $ref: '#/responses/noContent'
+      tags:
+      - incomes
+  /me/notifications:
+    get:
+      description: Returns a list of notifications of the user
+      operationId: listNotifications
+      responses:
+        "200":
+          $ref: '#/responses/notificationsResponse'
+      tags:
+      - notifications
+    patch:
+      description: Set all user's notifications to read and returns them
+      operationId: updateNotifications
+      responses:
+        "200":
+          $ref: '#/responses/notificationsResponse'
+      tags:
+      - notifications
+  /me/notifications/{id}:
+    patch:
+      description: Set the notification to read and returns the notification
+      operationId: updateNotification
+      parameters:
+      - description: The id of the notification to update
+        format: int32
+        in: path
+        name: NotificationID
+        required: true
+        type: integer
+      responses:
+        "200":
+          $ref: '#/responses/notificationResponse'
+      tags:
+      - notifications
+  /me/picture:
+    put:
+      consumes:
+      - multipart/form-data
+      description: Update the profile picture of the user and returns the user
+      operationId: updateUserPicture
+      parameters:
+      - description: Image file for profile picture
+        in: formData
+        name: file
+        required: true
+        type: file
+        x-go-name: File
+      responses:
+        "200":
+          $ref: '#/responses/userResponse'
+      tags:
+      - users
+  /notifications-ws:
+    get:
+      description: Listen for notifications
+      operationId: listenNotifications
+      parameters:
+      - description: Auth token for the user
+        in: query
+        name: token
+        required: true
+        type: string
+        x-go-name: Token
+      schemes:
+      - ws
+      tags:
+      - notifications
+  /token:
+    get:
+      description: Returns an auth token for the user
+      operationId: loginUser
+      parameters:
+      - description: The budget to create
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/usernamePasswordRequest'
+        x-go-name: User
+      responses:
+        "200":
+          $ref: '#/responses/tokenResponse'
+      tags:
+      - users
+  /users:
+    post:
+      description: Returns the created user
+      operationId: createUser
+      parameters:
+      - description: The budget to create
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/usernamePasswordRequest'
+        x-go-name: User
+      responses:
+        "200":
+          $ref: '#/responses/userResponse'
+      tags:
+      - users
 produces:
 - application/json
+responses:
+  budgetResponse:
+    description: Budget
+    headers:
+      Body: {}
+    schema:
+      $ref: '#/definitions/Budget'
+  budgetsResponse:
+    description: A list of budgets
+    schema:
+      items:
+        $ref: '#/definitions/Budget'
+      type: array
+  categoriesResponse:
+    description: A list of categories
+    schema:
+      items:
+        $ref: '#/definitions/Category'
+      type: array
+  expenseResponse:
+    description: Expense
+    headers:
+      Body: {}
+    schema:
+      $ref: '#/definitions/Budget'
+  expensesResponse:
+    description: A list of expenses
+    schema:
+      items:
+        $ref: '#/definitions/Expense'
+      type: array
+  incomeResponse:
+    description: Income
+    headers:
+      Body: {}
+    schema:
+      $ref: '#/definitions/Budget'
+  incomeTypesResponse:
+    description: A list of income types
+    schema:
+      items:
+        $ref: '#/definitions/IncomeType'
+      type: array
+  incomesResponse:
+    description: A list of incomes
+    schema:
+      items:
+        $ref: '#/definitions/Expense'
+      type: array
+  notificationResponse:
+    description: Notification
+    headers:
+      Body: {}
+    schema:
+      $ref: '#/definitions/Notification'
+  notificationsResponse:
+    description: A list of notifications
+    schema:
+      items:
+        $ref: '#/definitions/Notification'
+      type: array
+  tokenResponse:
+    description: Token
+    headers:
+      Body: {}
+    schema:
+      properties:
+        token:
+          type: string
+          x-go-name: Token
+      type: object
+  userResponse:
+    description: User
+    headers:
+      Body: {}
+    schema:
+      $ref: '#/definitions/User'
 schemes:
 - http
 swagger: "2.0"

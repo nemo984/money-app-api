@@ -10,6 +10,24 @@ import (
 	"github.com/nemo984/money-app-api/service"
 )
 
+// A list of budgets
+// swagger:response budgetsResponse
+type budgetsResponse struct {
+	// User's budgets
+	// in:body
+	Body []db.Budget
+}
+
+// Budget
+// swagger:response budgetResponse
+type budgetResponse struct {
+	Body db.Budget
+}
+
+// swagger:route GET /me/budgets budgets listBudgets
+// Returns a list of budgets of the user
+// responses:
+//  200: budgetsResponse
 func (s *Server) getBudgets(c *gin.Context) {
 	userPayload := c.MustGet(AuthorizationPayload).(service.JWTClaims)
 	budgets, err := s.service.GetBudgets(c, userPayload.UserID)
@@ -21,17 +39,48 @@ func (s *Server) getBudgets(c *gin.Context) {
 	c.JSON(http.StatusOK, budgets)
 }
 
-type createBudgetRequest struct {
-	CategoryID int32  `json:"category_id" binding:"required"`
-	Amount     string `json:"amount" binding:"required"`
-	Days       int    `json:"days" binding:"required"`
+// swagger:parameters createBudget
+type CreateBudgetRequest struct {
+	// The budget to create
+	//
+	// required: true
+	// in: body
+	Budget *createBudgetRequest `json:"budget"`
 }
 
+// swagger:model
+type createBudgetRequest struct {
+	// id of a category
+	//
+	// required: true
+	CategoryID int32 `json:"category_id" binding:"required"`
+	// amount of the budget
+	//
+	// required: true
+	Amount string `json:"amount" binding:"required"`
+	// Numbers of days to budget
+	//
+	// required: true
+	Days int `json:"days" binding:"required"`
+}
+
+// swagger:route POST /me/budgets budgets createBudget
+// Returns the created budget
+//
+// Consumes:
+//  - application/json
+//
+// Produces:
+//	-application/json
+//
+// responses:
+//  201: budgetResponse
+//  422: validationError
 func (s *Server) createBudget(c *gin.Context) {
 	userPayload := c.MustGet(AuthorizationPayload).(service.JWTClaims)
 	var req createBudgetRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, errorResponse(err))
+		c.JSON(http.StatusUnprocessableEntity, errorResponse(err))
 		return
 	}
 
@@ -53,10 +102,17 @@ func (s *Server) createBudget(c *gin.Context) {
 	c.JSON(http.StatusCreated, budget)
 }
 
+// swagger:parameters deleteBudget
 type deleteBudgetURI struct {
+	// The id of the budget to delete from the database
+	// in: path
+	// required: true
 	BudgetID int32 `uri:"id"`
 }
 
+// swagger:route DELETE /me/budgets/{id} budgets deleteBudget
+// responses:
+//  204: noContent
 func (s *Server) deleteBudget(c *gin.Context) {
 	userPayload := c.MustGet(AuthorizationPayload).(service.JWTClaims)
 	var uri deleteBudgetURI

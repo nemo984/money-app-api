@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 	"path/filepath"
 
 	"github.com/gin-gonic/gin"
@@ -14,23 +15,41 @@ import (
 	"github.com/nemo984/money-app-api/service"
 )
 
-//TODO: validator
+// User
+// swagger:response userResponse
+type userResponse struct {
+	Body db.User
+}
+
+// swagger:parameters loginUser createUser
+type UsernamePasswordRequest struct {
+	// The budget to create
+	//
+	// required: true
+	// in: body
+	User *usernamePasswordRequest `json:"user"`
+}
+
+// swagger:model
 type usernamePasswordRequest struct {
+	// required: true
 	Username string `json:"username" binding:"required"`
+	// required: true
 	Password string `json:"password" binding:"required"`
 }
 
-type createUserResponse struct {
-	UserID int32 `json:"id"`
+// Token
+// swagger:response tokenResponse
+type tokenResponse struct {
+	Body struct {
+		Token string `json:"token"`
+	}
 }
 
-type updateUserRequest struct {
-	Username   string `json:"username"`
-	Name       string `json:"name"`
-	Password   string `json:"password"`
-	ProfileURL string `json:"profile_url"`
-}
-
+// swagger:route GET /token users loginUser
+// Returns an auth token for the user
+// responses:
+//  200: tokenResponse
 func (s *Server) createUserToken(c *gin.Context) {
 	var req usernamePasswordRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -49,6 +68,10 @@ func (s *Server) createUserToken(c *gin.Context) {
 	})
 }
 
+// swagger:route POST /users users createUser
+// Returns the created user
+// responses:
+//  200: userResponse
 func (s *Server) createUser(c *gin.Context) {
 	var req usernamePasswordRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -65,11 +88,13 @@ func (s *Server) createUser(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusCreated, createUserResponse{
-		UserID: user.UserID,
-	})
+	c.JSON(http.StatusCreated, user)
 }
 
+// swagger:route GET /me users getUser
+// Returns user of the auth token
+// responses:
+//  200: userResponse
 func (s *Server) getUser(c *gin.Context) {
 	userPayload := c.MustGet(AuthorizationPayload).(service.JWTClaims)
 	user, err := s.service.GetUser(c, userPayload.UserID)
@@ -81,6 +106,27 @@ func (s *Server) getUser(c *gin.Context) {
 	c.JSON(http.StatusOK, user)
 }
 
+// swagger:parameters updateUser
+type UpdateUserRequest struct {
+	// The fields to update for the user
+	//
+	// required: true
+	// in: body
+	User *updateUserRequest `json:"user"`
+}
+
+// swagger:model
+type updateUserRequest struct {
+	Username   string `json:"username"`
+	Name       string `json:"name"`
+	Password   string `json:"password"`
+	ProfileURL string `json:"profile_url"`
+}
+
+// swagger:route PATCH /me users updateUser
+// Update user of the auth token with provided fields and returns the user
+// responses:
+//  200: userResponse
 func (s *Server) updateUser(c *gin.Context) {
 	userPayload := c.MustGet(AuthorizationPayload).(service.JWTClaims)
 	var req updateUserRequest
@@ -110,6 +156,21 @@ const (
 
 var allowedFileExtensions = []string{".jpg", ".jpeg", ".png"}
 
+// swagger:parameters updateUserPicture
+type uploadReq struct {
+	// Image file for profile picture
+	// Required: true
+	// In: formData
+	// swagger:file
+	File os.File `json:"file"`
+}
+
+// swagger:route PUT /me/picture users updateUserPicture
+// Update the profile picture of the user and returns the user
+// Consumes:
+//  - multipart/form-data
+// responses:
+//  200: userResponse
 func (s *Server) uploadProfilePicture(c *gin.Context) {
 	c.Request.Body = http.MaxBytesReader(c.Writer, c.Request.Body, maxBodyBytes)
 
@@ -160,6 +221,10 @@ func (s *Server) uploadProfilePicture(c *gin.Context) {
 	c.JSON(http.StatusOK, user)
 }
 
+// swagger:route DELETE /me users deleteUser
+// Delete user of the auth token
+// responses:
+//  204: noContent
 func (s *Server) deleteUser(c *gin.Context) {
 	userPayload := c.MustGet(AuthorizationPayload).(service.JWTClaims)
 	err := s.service.DeleteUser(c, userPayload.UserID)
