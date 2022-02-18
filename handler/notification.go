@@ -17,25 +17,25 @@ var upgrader = websocket.Upgrader{
 	WriteBufferSize: 1024,
 }
 
-func (s *Server) wsNotificationHandler(c *gin.Context)  {
-		claims, err := s.service.VerifyToken(c, c.Query("token"))
-		if err != nil {
-			err := errors.New("missing or invalid jwt token")
-			c.JSON(http.StatusBadRequest, errorResponse(err))
-			return
-		}
+func (s *Server) wsNotificationHandler(c *gin.Context) {
+	claims, err := s.service.VerifyToken(c, c.Query("token"))
+	if err != nil {
+		err := errors.New("missing or invalid jwt token")
+		c.JSON(http.StatusBadRequest, errorResponse(err))
+		return
+	}
 
-		upgrader.CheckOrigin = func(r *http.Request) bool { return true }
-		ws, err := upgrader.Upgrade(c.Writer, c.Request, nil)
-		if err != nil {
-			log.Println(err)
-			return
-		}
+	upgrader.CheckOrigin = func(r *http.Request) bool { return true }
+	ws, err := upgrader.Upgrade(c.Writer, c.Request, nil)
+	if err != nil {
+		log.Println(err)
+		return
+	}
 
-		user := notification.NewUser(ws, claims.UserID)
-		s.hub.Register(user)
-		defer s.hub.Unregister(user)
-		user.Listen()
+	user := notification.NewUser(ws, claims.UserID)
+	s.hub.Register(user)
+	defer s.hub.Unregister(user)
+	user.Listen()
 }
 
 func (s *Server) getNotifications(c *gin.Context) {

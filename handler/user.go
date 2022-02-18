@@ -2,6 +2,7 @@ package handler
 
 import (
 	"database/sql"
+	"errors"
 	"fmt"
 	"log"
 	"net/http"
@@ -102,9 +103,16 @@ func (s *Server) updateUser(c *gin.Context) {
 	c.JSON(http.StatusOK, user)
 }
 
-const imagesFilePath = "images/user-profile-pics/"
+const (
+	imagesFilePath = "images/user-profile-pics/"
+	maxBodyBytes   = 2 * 1024 * 1024 // 2 Mb
+)
+
+var allowedFileExtensions = []string{".jpg", ".jpeg", ".png"}
 
 func (s *Server) uploadProfilePicture(c *gin.Context) {
+	c.Request.Body = http.MaxBytesReader(c.Writer, c.Request.Body, maxBodyBytes)
+
 	userPayload := c.MustGet(AuthorizationPayload).(service.JWTClaims)
 	file, err := c.FormFile("file")
 	if err != nil {
@@ -113,8 +121,22 @@ func (s *Server) uploadProfilePicture(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
-	//TODO: validate extension, resize image?
-	newFilename := uuid.New().String() + filepath.Ext(file.Filename)
+
+	fileExtension := filepath.Ext(file.Filename)
+	var allowed bool
+	for _, ext := range allowedFileExtensions {
+		if fileExtension == ext {
+			allowed = true
+			break
+		}
+	}
+	if !allowed {
+		err := errors.New("only .jpg, .jpeg, .png file extensions are allowed ")
+		c.JSON(http.StatusBadRequest, err)
+		return
+	}
+
+	newFilename := uuid.New().String() + fileExtension
 	filepath := imagesFilePath + newFilename
 	if err := c.SaveUploadedFile(file, filepath); err != nil {
 		err := fmt.Errorf("upload file err: %s", err.Error())
