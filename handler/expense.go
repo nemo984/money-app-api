@@ -6,6 +6,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	db "github.com/nemo984/money-app-api/db/sqlc"
+	"github.com/nemo984/money-app-api/docs"
 	"github.com/nemo984/money-app-api/service"
 )
 
@@ -20,10 +21,10 @@ type expensesResponse struct {
 // Expense
 // swagger:response expenseResponse
 type expenseResponse struct {
-	Body db.Budget
+	Body db.Expense
 }
 
-// swagger:route GET /me/expenses expenses listExpenses
+// swagger:route GET /me/expenses Expenses listExpenses
 // Returns a list of expenses of the user
 // responses:
 //  200: expensesResponse
@@ -52,18 +53,20 @@ type createExpenseRequest struct {
 	// id of a category
 	//
 	// required: true
-	CategoryID int32 `json:"category_id" binding:"required"`
-	// amount of the expense
+	// min: 1
+	CategoryID int32 `json:"category_id" binding:"required,min=1"`
+	// amount of the
 	//
 	// required: true
-	Amount string `json:"amount" binding:"required"`
+	// min: 1
+	Amount string `json:"amount" binding:"required,min=1"`
 	// frequency of the expense
-	Frequency db.DateFrequency `json:"frequency"`
+	Frequency docs.DateFrequency `json:"frequency"`
 	// note of the expense
 	Note string `json:"note"`
 }
 
-// swagger:route POST /me/expenses expenses createExpense
+// swagger:route POST /me/expenses Expenses createExpense
 // Returns the created expense
 //
 // Consumes:
@@ -87,7 +90,7 @@ func (s *Server) createExpense(c *gin.Context) {
 		UserID:     userPayload.UserID,
 		CategoryID: req.CategoryID,
 		Amount:     req.Amount,
-		Frequency:  req.Frequency,
+		Frequency:  db.DateFrequency(req.Frequency),
 		Note: sql.NullString{
 			String: req.Note,
 			Valid:  true,
@@ -107,10 +110,11 @@ type deleteExpenseURI struct {
 	// The id of the expense to delete from the database
 	// in: path
 	// required: true
-	ExpenseID int32 `uri:"id"`
+	// min: 1
+	ExpenseID int32 `uri:"id" binding:"min=1"`
 }
 
-// swagger:route DELETE /me/expenses/{id} expenses deleteExpense
+// swagger:route DELETE /me/expenses/{id} Expenses deleteExpense
 // responses:
 //  204: noContent
 func (s *Server) deleteExpense(c *gin.Context) {

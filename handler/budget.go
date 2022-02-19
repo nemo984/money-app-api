@@ -24,7 +24,7 @@ type budgetResponse struct {
 	Body db.Budget
 }
 
-// swagger:route GET /me/budgets budgets listBudgets
+// swagger:route GET /me/budgets Budgets listBudgets
 // Returns a list of budgets of the user
 // responses:
 //  200: budgetsResponse
@@ -51,20 +51,20 @@ type CreateBudgetRequest struct {
 // swagger:model
 type createBudgetRequest struct {
 	// id of a category
-	//
 	// required: true
-	CategoryID int32 `json:"category_id" binding:"required"`
+	// min: 1
+	CategoryID int32 `json:"category_id" binding:"required,min=1"`
 	// amount of the budget
-	//
 	// required: true
-	Amount string `json:"amount" binding:"required"`
+	// min: 1
+	Amount string `json:"amount" binding:"required,min=1"`
 	// Numbers of days to budget
-	//
 	// required: true
-	Days int `json:"days" binding:"required"`
+	// min: 1
+	Days int `json:"days" binding:"required,min=1"`
 }
 
-// swagger:route POST /me/budgets budgets createBudget
+// swagger:route POST /me/budgets Budgets createBudget
 // Returns the created budget
 //
 // Consumes:
@@ -107,10 +107,11 @@ type deleteBudgetURI struct {
 	// The id of the budget to delete from the database
 	// in: path
 	// required: true
-	BudgetID int32 `uri:"id"`
+	// min: 1
+	BudgetID int32 `uri:"id" binding:"min=1"`
 }
 
-// swagger:route DELETE /me/budgets/{id} budgets deleteBudget
+// swagger:route DELETE /me/budgets/{id} Budgets deleteBudget
 // responses:
 //  204: noContent
 func (s *Server) deleteBudget(c *gin.Context) {

@@ -15,7 +15,7 @@ type categoriesResponse struct {
 	Body []db.Category
 }
 
-// swagger:route GET /categories categories listCategories
+// swagger:route GET /categories Categories listCategories
 // Returns a list of categories
 // responses:
 //  200: categoriesResponse

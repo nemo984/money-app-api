@@ -6,6 +6,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	db "github.com/nemo984/money-app-api/db/sqlc"
+	"github.com/nemo984/money-app-api/docs"
 	"github.com/nemo984/money-app-api/service"
 )
 
@@ -14,16 +15,16 @@ import (
 type incomesResponse struct {
 	// User's expenses
 	// in:body
-	Body []db.Expense
+	Body []db.Income
 }
 
 // Income
 // swagger:response incomeResponse
 type incomeResponse struct {
-	Body db.Budget
+	Body db.Income
 }
 
-// swagger:route GET /me/incomes incomes listIncomes
+// swagger:route GET /me/incomes Incomes listIncomes
 // Returns a list of incomes of the user
 // responses:
 //  200: incomesResponse
@@ -52,18 +53,22 @@ type createIncomeRequest struct {
 	// id of the type of income
 	//
 	// required: true
-	IncomeTypeID int32 `json:"income_type_id" binding:"required"`
+	// min: 1
+	IncomeTypeID int32 `json:"income_type_id" binding:"required,min=1"`
 	// description of for the income
-	Description string `json:"description"`
+	//
+	// maximum length: 255
+	Description string `json:"description" binding:"max=255"`
 	// amount of the income
 	//
 	// required: true
-	Amount string `json:"amount" binding:"required"`
+	// min: 1
+	Amount string `json:"amount" binding:"required,min=1"`
 	// frequency of the income
-	Frequency db.DateFrequency `json:"frequency"`
+	Frequency docs.DateFrequency `json:"frequency"`
 }
 
-// swagger:route POST /me/incomes incomes createIncome
+// swagger:route POST /me/incomes Incomes createIncome
 // Returns the created income
 //
 // Consumes:
@@ -91,7 +96,7 @@ func (s *Server) createIncome(c *gin.Context) {
 			String: req.Description,
 			Valid:  true,
 		},
-		Frequency: req.Frequency,
+		Frequency: db.DateFrequency(req.Frequency),
 	}
 	income, err := s.service.CreateIncome(c, args)
 	if err != nil {
@@ -107,10 +112,11 @@ type deleteIncomeURI struct {
 	// The id of the income to delete from the database
 	// in: path
 	// required: true
-	IncomeID int32 `uri:"id"`
+	// min: 1
+	IncomeID int32 `uri:"id" binding:"min=1"`
 }
 
-// swagger:route DELETE /me/incomes/{id} incomes deleteIncome
+// swagger:route DELETE /me/incomes/{id} Incomes deleteIncome
 // responses:
 //  204: noContent
 func (s *Server) deleteIncome(c *gin.Context) {
@@ -137,7 +143,7 @@ type incomeTypesResponse struct {
 	Body []db.IncomeType
 }
 
-// swagger:route GET /income-types incomes listIncomeTypes
+// swagger:route GET /income-types Incomes listIncomeTypes
 // List the available income types
 // responses:
 //  200: incomeTypesResponse

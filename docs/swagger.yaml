@@ -64,6 +64,31 @@ definitions:
         x-go-name: UserID
     type: object
     x-go-package: github.com/nemo984/money-app-api/db/sqlc
+  Income:
+    properties:
+      amount:
+        type: string
+        x-go-name: Amount
+      created_at:
+        $ref: '#/definitions/NullTime'
+      description:
+        $ref: '#/definitions/NullString'
+      frequency:
+        $ref: '#/definitions/DateFrequency'
+      income_id:
+        format: int32
+        type: integer
+        x-go-name: IncomeID
+      income_type_id:
+        format: int32
+        type: integer
+        x-go-name: IncomeTypeID
+      user_id:
+        format: int32
+        type: integer
+        x-go-name: UserID
+    type: object
+    x-go-package: github.com/nemo984/money-app-api/db/sqlc
   IncomeType:
     properties:
       income_type_id:
@@ -160,16 +185,19 @@ definitions:
     properties:
       amount:
         description: amount of the budget
+        minimum: 1
         type: string
         x-go-name: Amount
       category_id:
         description: id of a category
         format: int32
+        minimum: 1
         type: integer
         x-go-name: CategoryID
       days:
         description: Numbers of days to budget
         format: int64
+        minimum: 1
         type: integer
         x-go-name: Days
     required:
@@ -181,16 +209,35 @@ definitions:
   createExpenseRequest:
     properties:
       amount:
-        description: amount of the expense
+        description: amount of the
+        minimum: 1
         type: string
         x-go-name: Amount
       category_id:
         description: id of a category
         format: int32
+        minimum: 1
         type: integer
         x-go-name: CategoryID
       frequency:
-        $ref: '#/definitions/DateFrequency'
+        description: |-
+          frequency of the expense
+          day DateFrequencyDay
+          week DateFrequencyWeek
+          month DateFrequencyMonth
+          year DateFrequencyYear
+        enum:
+        - day
+        - week
+        - month
+        - year
+        type: string
+        x-go-enum-desc: |-
+          day DateFrequencyDay
+          week DateFrequencyWeek
+          month DateFrequencyMonth
+          year DateFrequencyYear
+        x-go-name: Frequency
       note:
         description: note of the expense
         type: string
@@ -204,17 +251,37 @@ definitions:
     properties:
       amount:
         description: amount of the income
+        minimum: 1
         type: string
         x-go-name: Amount
       description:
         description: description of for the income
+        maxLength: 255
         type: string
         x-go-name: Description
       frequency:
-        $ref: '#/definitions/DateFrequency'
+        description: |-
+          frequency of the income
+          day DateFrequencyDay
+          week DateFrequencyWeek
+          month DateFrequencyMonth
+          year DateFrequencyYear
+        enum:
+        - day
+        - week
+        - month
+        - year
+        type: string
+        x-go-enum-desc: |-
+          day DateFrequencyDay
+          week DateFrequencyWeek
+          month DateFrequencyMonth
+          year DateFrequencyYear
+        x-go-name: Frequency
       income_type_id:
         description: id of the type of income
         format: int32
+        minimum: 1
         type: integer
         x-go-name: IncomeTypeID
     required:
@@ -241,9 +308,12 @@ definitions:
   usernamePasswordRequest:
     properties:
       password:
+        example: Hello123
+        minLength: 6
         type: string
         x-go-name: Password
       username:
+        example: Hello
         type: string
         x-go-name: Username
     required:
@@ -264,7 +334,7 @@ paths:
         "200":
           $ref: '#/responses/categoriesResponse'
       tags:
-      - categories
+      - Categories
   /google-login:
     get:
       description: Logins with google, set cookie with token
@@ -273,7 +343,7 @@ paths:
         "307":
           $ref: '#/responses/redirectGoogle'
       tags:
-      - users
+      - Users
   /income-types:
     get:
       description: List the available income types
@@ -282,7 +352,7 @@ paths:
         "200":
           $ref: '#/responses/incomeTypesResponse'
       tags:
-      - incomes
+      - Incomes
   /me:
     delete:
       description: Delete user of the auth token
@@ -291,7 +361,7 @@ paths:
         "204":
           $ref: '#/responses/noContent'
       tags:
-      - users
+      - Users
     get:
       description: Returns user of the auth token
       operationId: getUser
@@ -299,7 +369,7 @@ paths:
         "200":
           $ref: '#/responses/userResponse'
       tags:
-      - users
+      - Users
     patch:
       description: Update user of the auth token with provided fields and returns
         the user
@@ -316,7 +386,7 @@ paths:
         "200":
           $ref: '#/responses/userResponse'
       tags:
-      - users
+      - Users
   /me/budgets:
     get:
       description: Returns a list of budgets of the user
@@ -325,7 +395,7 @@ paths:
         "200":
           $ref: '#/responses/budgetsResponse'
       tags:
-      - budgets
+      - Budgets
     post:
       consumes:
       - application/json
@@ -347,7 +417,7 @@ paths:
         "422":
           $ref: '#/responses/validationError'
       tags:
-      - budgets
+      - Budgets
   /me/budgets/{id}:
     delete:
       operationId: deleteBudget
@@ -355,6 +425,7 @@ paths:
       - description: The id of the budget to delete from the database
         format: int32
         in: path
+        minimum: 1
         name: BudgetID
         required: true
         type: integer
@@ -362,7 +433,7 @@ paths:
         "204":
           $ref: '#/responses/noContent'
       tags:
-      - budgets
+      - Budgets
   /me/expenses:
     get:
       description: Returns a list of expenses of the user
@@ -371,7 +442,7 @@ paths:
         "200":
           $ref: '#/responses/expensesResponse'
       tags:
-      - expenses
+      - Expenses
     post:
       consumes:
       - application/json
@@ -393,7 +464,7 @@ paths:
         "422":
           $ref: '#/responses/validationError'
       tags:
-      - expenses
+      - Expenses
   /me/expenses/{id}:
     delete:
       operationId: deleteExpense
@@ -401,6 +472,7 @@ paths:
       - description: The id of the expense to delete from the database
         format: int32
         in: path
+        minimum: 1
         name: ExpenseID
         required: true
         type: integer
@@ -408,7 +480,7 @@ paths:
         "204":
           $ref: '#/responses/noContent'
       tags:
-      - expenses
+      - Expenses
   /me/incomes:
     get:
       description: Returns a list of incomes of the user
@@ -417,7 +489,7 @@ paths:
         "200":
           $ref: '#/responses/incomesResponse'
       tags:
-      - incomes
+      - Incomes
     post:
       consumes:
       - application/json
@@ -439,7 +511,7 @@ paths:
         "422":
           $ref: '#/responses/validationError'
       tags:
-      - incomes
+      - Incomes
   /me/incomes/{id}:
     delete:
       operationId: deleteIncome
@@ -447,6 +519,7 @@ paths:
       - description: The id of the income to delete from the database
         format: int32
         in: path
+        minimum: 1
         name: IncomeID
         required: true
         type: integer
@@ -454,7 +527,7 @@ paths:
         "204":
           $ref: '#/responses/noContent'
       tags:
-      - incomes
+      - Incomes
   /me/notifications:
     get:
       description: Returns a list of notifications of the user
@@ -463,7 +536,7 @@ paths:
         "200":
           $ref: '#/responses/notificationsResponse'
       tags:
-      - notifications
+      - Notifications
     patch:
       description: Set all user's notifications to read and returns them
       operationId: updateNotifications
@@ -471,7 +544,7 @@ paths:
         "200":
           $ref: '#/responses/notificationsResponse'
       tags:
-      - notifications
+      - Notifications
   /me/notifications/{id}:
     patch:
       description: Set the notification to read and returns the notification
@@ -480,6 +553,7 @@ paths:
       - description: The id of the notification to update
         format: int32
         in: path
+        minimum: 1
         name: NotificationID
         required: true
         type: integer
@@ -487,7 +561,7 @@ paths:
         "200":
           $ref: '#/responses/notificationResponse'
       tags:
-      - notifications
+      - Notifications
   /me/picture:
     put:
       consumes:
@@ -495,7 +569,7 @@ paths:
       description: Update the profile picture of the user and returns the user
       operationId: updateUserPicture
       parameters:
-      - description: Image file for profile picture
+      - description: Image file for profile picture < 2Mb
         in: formData
         name: file
         required: true
@@ -505,7 +579,7 @@ paths:
         "200":
           $ref: '#/responses/userResponse'
       tags:
-      - users
+      - Users
   /notifications-ws:
     get:
       description: Listen for notifications
@@ -517,12 +591,15 @@ paths:
         required: true
         type: string
         x-go-name: Token
+      responses:
+        "200":
+          $ref: '#/responses/notificationResponse'
       schemes:
       - ws
       tags:
-      - notifications
+      - Notifications
   /token:
-    get:
+    post:
       description: Returns an auth token for the user
       operationId: loginUser
       parameters:
@@ -537,7 +614,7 @@ paths:
         "200":
           $ref: '#/responses/tokenResponse'
       tags:
-      - users
+      - Users
   /users:
     post:
       description: Returns the created user
@@ -554,7 +631,7 @@ paths:
         "200":
           $ref: '#/responses/userResponse'
       tags:
-      - users
+      - Users
 produces:
 - application/json
 responses:
@@ -581,7 +658,7 @@ responses:
     headers:
       Body: {}
     schema:
-      $ref: '#/definitions/Budget'
+      $ref: '#/definitions/Expense'
   expensesResponse:
     description: A list of expenses
     schema:
@@ -593,7 +670,7 @@ responses:
     headers:
       Body: {}
     schema:
-      $ref: '#/definitions/Budget'
+      $ref: '#/definitions/Income'
   incomeTypesResponse:
     description: A list of income types
     schema:
@@ -604,7 +681,7 @@ responses:
     description: A list of incomes
     schema:
       items:
-        $ref: '#/definitions/Expense'
+        $ref: '#/definitions/Income'
       type: array
   notificationResponse:
     description: Notification

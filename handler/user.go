@@ -33,9 +33,12 @@ type UsernamePasswordRequest struct {
 // swagger:model
 type usernamePasswordRequest struct {
 	// required: true
+	// example: Hello
 	Username string `json:"username" binding:"required"`
 	// required: true
-	Password string `json:"password" binding:"required"`
+	// min length: 6
+	// example: Hello123
+	Password string `json:"password" binding:"required,min=6"`
 }
 
 // Token
@@ -46,7 +49,7 @@ type tokenResponse struct {
 	}
 }
 
-// swagger:route GET /token users loginUser
+// swagger:route POST /token Users loginUser
 // Returns an auth token for the user
 // responses:
 //  200: tokenResponse
@@ -68,7 +71,7 @@ func (s *Server) createUserToken(c *gin.Context) {
 	})
 }
 
-// swagger:route POST /users users createUser
+// swagger:route POST /users Users createUser
 // Returns the created user
 // responses:
 //  200: userResponse
@@ -91,7 +94,7 @@ func (s *Server) createUser(c *gin.Context) {
 	c.JSON(http.StatusCreated, user)
 }
 
-// swagger:route GET /me users getUser
+// swagger:route GET /me Users getUser
 // Returns user of the auth token
 // responses:
 //  200: userResponse
@@ -123,7 +126,7 @@ type updateUserRequest struct {
 	ProfileURL string `json:"profile_url"`
 }
 
-// swagger:route PATCH /me users updateUser
+// swagger:route PATCH /me Users updateUser
 // Update user of the auth token with provided fields and returns the user
 // responses:
 //  200: userResponse
@@ -158,14 +161,14 @@ var allowedFileExtensions = []string{".jpg", ".jpeg", ".png"}
 
 // swagger:parameters updateUserPicture
 type uploadReq struct {
-	// Image file for profile picture
+	// Image file for profile picture < 2Mb
 	// Required: true
 	// In: formData
 	// swagger:file
 	File os.File `json:"file"`
 }
 
-// swagger:route PUT /me/picture users updateUserPicture
+// swagger:route PUT /me/picture Users updateUserPicture
 // Update the profile picture of the user and returns the user
 // Consumes:
 //  - multipart/form-data
@@ -221,7 +224,7 @@ func (s *Server) uploadProfilePicture(c *gin.Context) {
 	c.JSON(http.StatusOK, user)
 }
 
-// swagger:route DELETE /me users deleteUser
+// swagger:route DELETE /me Users deleteUser
 // Delete user of the auth token
 // responses:
 //  204: noContent

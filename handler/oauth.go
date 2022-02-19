@@ -37,7 +37,7 @@ type UserInfo struct {
 	Picture string `json:"picture"`
 }
 
-// swagger:route GET /google-login users loginGoogle
+// swagger:route GET /google-login Users loginGoogle
 //Logins with google, set cookie with token
 // responses:
 //  307: redirectGoogle

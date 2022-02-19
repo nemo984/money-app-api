@@ -20,14 +20,15 @@ var upgrader = websocket.Upgrader{
 // swagger:parameters listenNotifications
 type notificationWSToken struct {
 	// Auth token for the user
-	//
 	// required: true
 	Token string `json:"token"`
 }
 
-// swagger:route GET /notifications-ws notifications listenNotifications
+// swagger:route GET /notifications-ws Notifications listenNotifications
 // Listen for notifications
 // Schemes: ws
+// responses:
+//  200: notificationResponse
 func (s *Server) wsNotificationHandler(c *gin.Context) {
 	claims, err := s.service.VerifyToken(c, c.Query("token"))
 	if err != nil {
@@ -63,7 +64,7 @@ type notificationResponse struct {
 	Body db.Notification
 }
 
-// swagger:route GET /me/notifications notifications listNotifications
+// swagger:route GET /me/notifications Notifications listNotifications
 // Returns a list of notifications of the user
 // responses:
 //  200: notificationsResponse
@@ -83,10 +84,11 @@ type notificationURI struct {
 	// The id of the notification to update
 	// in: path
 	// required: true
-	NotificationID int32 `uri:"id"`
+	// min: 1
+	NotificationID int32 `uri:"id" binding:"min=1"`
 }
 
-// swagger:route PATCH /me/notifications/{id} notifications updateNotification
+// swagger:route PATCH /me/notifications/{id} Notifications updateNotification
 // Set the notification to read and returns the notification
 // responses:
 //  200: notificationResponse
@@ -110,7 +112,7 @@ func (s *Server) updateNotification(c *gin.Context) {
 	c.JSON(http.StatusOK, notification)
 }
 
-// swagger:route PATCH /me/notifications notifications updateNotifications
+// swagger:route PATCH /me/notifications Notifications updateNotifications
 // Set all user's notifications to read and returns them
 // responses:
 //  200: notificationsResponse
