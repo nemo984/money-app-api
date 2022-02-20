@@ -26,6 +26,11 @@ type expenseResponse struct {
 
 // swagger:route GET /me/expenses Expenses listExpenses
 // Returns a list of expenses of the user
+//
+// Security:
+//  bearerAuth:
+//  cookieAuth:
+//
 // responses:
 //  200: expensesResponse
 func (s *Server) getExpenses(c *gin.Context) {
@@ -75,6 +80,10 @@ type createExpenseRequest struct {
 // Produces:
 //	- application/json
 //
+// Security:
+//  bearerAuth:
+//  cookieAuth:
+//
 // responses:
 //  201: expenseResponse
 //  422: validationError
@@ -115,6 +124,11 @@ type deleteExpenseURI struct {
 }
 
 // swagger:route DELETE /me/expenses/{id} Expenses deleteExpense
+//
+// Security:
+//  bearerAuth:
+//  cookieAuth:
+//
 // responses:
 //  204: noContent
 func (s *Server) deleteExpense(c *gin.Context) {

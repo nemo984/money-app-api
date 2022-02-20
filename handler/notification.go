@@ -66,6 +66,11 @@ type notificationResponse struct {
 
 // swagger:route GET /me/notifications Notifications listNotifications
 // Returns a list of notifications of the user
+//
+// Security:
+//  bearerAuth:
+//  cookieAuth:
+//
 // responses:
 //  200: notificationsResponse
 func (s *Server) getNotifications(c *gin.Context) {
@@ -90,6 +95,11 @@ type notificationURI struct {
 
 // swagger:route PATCH /me/notifications/{id} Notifications updateNotification
 // Set the notification to read and returns the notification
+//
+// Security:
+//  bearerAuth:
+//  cookieAuth:
+//
 // responses:
 //  200: notificationResponse
 func (s *Server) updateNotification(c *gin.Context) {
@@ -114,6 +124,11 @@ func (s *Server) updateNotification(c *gin.Context) {
 
 // swagger:route PATCH /me/notifications Notifications updateNotifications
 // Set all user's notifications to read and returns them
+//
+// Security:
+//  bearerAuth:
+//  cookieAuth:
+//
 // responses:
 //  200: notificationsResponse
 func (s *Server) updateAllNotifications(c *gin.Context) {

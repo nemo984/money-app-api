@@ -11,6 +11,8 @@ import (
 )
 
 const (
+	JWTTokenCookieKey = "jwt-token"
+
 	authorizationHeader  = "Authorization"
 	authorizationBearer  = "bearer"
 	AuthorizationPayload = "payload"

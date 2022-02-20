@@ -26,6 +26,11 @@ type budgetResponse struct {
 
 // swagger:route GET /me/budgets Budgets listBudgets
 // Returns a list of budgets of the user
+//
+// Security:
+//  bearerAuth:
+//  cookieAuth:
+//
 // responses:
 //  200: budgetsResponse
 func (s *Server) getBudgets(c *gin.Context) {
@@ -73,6 +78,10 @@ type createBudgetRequest struct {
 // Produces:
 //	-application/json
 //
+// Security:
+//  bearerAuth:
+//  cookieAuth:
+//
 // responses:
 //  201: budgetResponse
 //  422: validationError
@@ -112,6 +121,11 @@ type deleteBudgetURI struct {
 }
 
 // swagger:route DELETE /me/budgets/{id} Budgets deleteBudget
+//
+// Security:
+//  bearerAuth:
+//  cookieAuth:
+//
 // responses:
 //  204: noContent
 func (s *Server) deleteBudget(c *gin.Context) {

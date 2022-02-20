@@ -1,17 +1,3 @@
-// Package classification Money Management API
-//
-// Documentation for Money Management API
-//
-// Schemes: http
-// BasePath: /api
-// Version: 1.0.0
-//
-// Consumes:
-// - application/json
-//
-// Produces:
-// -application/json
-// swagger:meta
 package handler
 
 import (

@@ -337,7 +337,7 @@ paths:
       - Categories
   /google-login:
     get:
-      description: Logins with google, set cookie with token
+      description: Logins with google. The token is set in a cookie named `jwt-token`
       operationId: loginGoogle
       responses:
         "307":
@@ -360,6 +360,9 @@ paths:
       responses:
         "204":
           $ref: '#/responses/noContent'
+      security:
+      - bearerAuth: []
+      - cookieAuth: []
       tags:
       - Users
     get:
@@ -368,6 +371,9 @@ paths:
       responses:
         "200":
           $ref: '#/responses/userResponse'
+      security:
+      - bearerAuth: []
+      - cookieAuth: []
       tags:
       - Users
     patch:
@@ -385,6 +391,9 @@ paths:
       responses:
         "200":
           $ref: '#/responses/userResponse'
+      security:
+      - bearerAuth: []
+      - cookieAuth: []
       tags:
       - Users
   /me/budgets:
@@ -394,6 +403,9 @@ paths:
       responses:
         "200":
           $ref: '#/responses/budgetsResponse'
+      security:
+      - bearerAuth: []
+      - cookieAuth: []
       tags:
       - Budgets
     post:
@@ -416,6 +428,9 @@ paths:
           $ref: '#/responses/budgetResponse'
         "422":
           $ref: '#/responses/validationError'
+      security:
+      - bearerAuth: []
+      - cookieAuth: []
       tags:
       - Budgets
   /me/budgets/{id}:
@@ -432,6 +447,9 @@ paths:
       responses:
         "204":
           $ref: '#/responses/noContent'
+      security:
+      - bearerAuth: []
+      - cookieAuth: []
       tags:
       - Budgets
   /me/expenses:
@@ -441,6 +459,9 @@ paths:
       responses:
         "200":
           $ref: '#/responses/expensesResponse'
+      security:
+      - bearerAuth: []
+      - cookieAuth: []
       tags:
       - Expenses
     post:
@@ -463,6 +484,9 @@ paths:
           $ref: '#/responses/expenseResponse'
         "422":
           $ref: '#/responses/validationError'
+      security:
+      - bearerAuth: []
+      - cookieAuth: []
       tags:
       - Expenses
   /me/expenses/{id}:
@@ -479,6 +503,9 @@ paths:
       responses:
         "204":
           $ref: '#/responses/noContent'
+      security:
+      - bearerAuth: []
+      - cookieAuth: []
       tags:
       - Expenses
   /me/incomes:
@@ -488,6 +515,9 @@ paths:
       responses:
         "200":
           $ref: '#/responses/incomesResponse'
+      security:
+      - bearerAuth: []
+      - cookieAuth: []
       tags:
       - Incomes
     post:
@@ -510,6 +540,9 @@ paths:
           $ref: '#/responses/incomeResponse'
         "422":
           $ref: '#/responses/validationError'
+      security:
+      - bearerAuth: []
+      - cookieAuth: []
       tags:
       - Incomes
   /me/incomes/{id}:
@@ -526,6 +559,9 @@ paths:
       responses:
         "204":
           $ref: '#/responses/noContent'
+      security:
+      - bearerAuth: []
+      - cookieAuth: []
       tags:
       - Incomes
   /me/notifications:
@@ -535,6 +571,9 @@ paths:
       responses:
         "200":
           $ref: '#/responses/notificationsResponse'
+      security:
+      - bearerAuth: []
+      - cookieAuth: []
       tags:
       - Notifications
     patch:
@@ -543,6 +582,9 @@ paths:
       responses:
         "200":
           $ref: '#/responses/notificationsResponse'
+      security:
+      - bearerAuth: []
+      - cookieAuth: []
       tags:
       - Notifications
   /me/notifications/{id}:
@@ -560,6 +602,9 @@ paths:
       responses:
         "200":
           $ref: '#/responses/notificationResponse'
+      security:
+      - bearerAuth: []
+      - cookieAuth: []
       tags:
       - Notifications
   /me/picture:
@@ -578,6 +623,9 @@ paths:
       responses:
         "200":
           $ref: '#/responses/userResponse'
+      security:
+      - bearerAuth: []
+      - cookieAuth: []
       tags:
       - Users
   /notifications-ws:
@@ -713,4 +761,15 @@ responses:
       $ref: '#/definitions/User'
 schemes:
 - http
+- ws
+securityDefinitions:
+  bearerAuth:
+    description: Token obtained from loginUser endpoint
+    in: header
+    name: Authorization
+    type: apiKey
+  cookieAuth:
+    in: cookie
+    name: jwt-token
+    type: apiKey
 swagger: "2.0"

@@ -96,6 +96,11 @@ func (s *Server) createUser(c *gin.Context) {
 
 // swagger:route GET /me Users getUser
 // Returns user of the auth token
+//
+// Security:
+//  bearerAuth:
+//  cookieAuth:
+//
 // responses:
 //  200: userResponse
 func (s *Server) getUser(c *gin.Context) {
@@ -128,6 +133,11 @@ type updateUserRequest struct {
 
 // swagger:route PATCH /me Users updateUser
 // Update user of the auth token with provided fields and returns the user
+//
+// Security:
+//  bearerAuth:
+//  cookieAuth:
+//
 // responses:
 //  200: userResponse
 func (s *Server) updateUser(c *gin.Context) {
@@ -172,6 +182,11 @@ type uploadReq struct {
 // Update the profile picture of the user and returns the user
 // Consumes:
 //  - multipart/form-data
+//
+// Security:
+//  bearerAuth:
+//  cookieAuth:
+//
 // responses:
 //  200: userResponse
 func (s *Server) uploadProfilePicture(c *gin.Context) {
@@ -226,6 +241,11 @@ func (s *Server) uploadProfilePicture(c *gin.Context) {
 
 // swagger:route DELETE /me Users deleteUser
 // Delete user of the auth token
+//
+// Security:
+//  bearerAuth:
+//  cookieAuth:
+//
 // responses:
 //  204: noContent
 func (s *Server) deleteUser(c *gin.Context) {

@@ -26,6 +26,11 @@ type incomeResponse struct {
 
 // swagger:route GET /me/incomes Incomes listIncomes
 // Returns a list of incomes of the user
+//
+// Security:
+//  bearerAuth:
+//  cookieAuth:
+//
 // responses:
 //  200: incomesResponse
 func (s *Server) getIncomes(c *gin.Context) {
@@ -77,6 +82,10 @@ type createIncomeRequest struct {
 // Produces:
 //	- application/json
 //
+// Security:
+//  bearerAuth:
+//  cookieAuth:
+//
 // responses:
 //  201: incomeResponse
 //  422: validationError
@@ -117,6 +126,11 @@ type deleteIncomeURI struct {
 }
 
 // swagger:route DELETE /me/incomes/{id} Incomes deleteIncome
+//
+// Security:
+//  bearerAuth:
+//  cookieAuth:
+//
 // responses:
 //  204: noContent
 func (s *Server) deleteIncome(c *gin.Context) {

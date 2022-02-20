@@ -27,8 +27,6 @@ var (
 	}
 	// Some random string, random for each request
 	oauthStateString = "random"
-
-	JWTTokenCookieKey = "jwt-token"
 )
 
 type UserInfo struct {
@@ -38,7 +36,7 @@ type UserInfo struct {
 }
 
 // swagger:route GET /google-login Users loginGoogle
-//Logins with google, set cookie with token
+// Logins with google. The token is set in a cookie named `jwt-token`
 // responses:
 //  307: redirectGoogle
 func (s *Server) GoogleLogin(c *gin.Context) {
