@@ -18,6 +18,7 @@ type Server struct {
 }
 
 type NotificationHub interface {
+	Run() 
 	Notify(userID int32, notification db.Notification)
 	Register(user *notification.User)
 	Unregister(user *notification.User)
@@ -99,6 +100,7 @@ func NewServer(service service.Service, hub NotificationHub) *Server {
 }
 
 func (s *Server) Start(addr string) error {
+	go s.hub.Run()
 	return s.router.Run(addr)
 }
 

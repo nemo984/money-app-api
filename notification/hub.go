@@ -40,7 +40,7 @@ func (h *Hub) Run() {
 
 		case notification := <-h.notify:
 			if _, ok := h.users[notification.UserID]; ok {
-				h.users[notification.NotificationID].send <- notification
+				h.users[notification.UserID].send <- notification
 			}
 		}
 	}

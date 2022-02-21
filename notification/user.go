@@ -1,6 +1,8 @@
 package notification
 
 import (
+	"log"
+
 	"github.com/gorilla/websocket"
 	db "github.com/nemo984/money-app-api/db/sqlc"
 )
@@ -27,6 +29,7 @@ func (u *User) write(mt int, payload []byte) error {
 
 // writePump pumps messages from the hub to the websocket connection.
 func (u *User) Listen() {
+	log.Printf("%v user is listening for message\n", u)
 	defer func() {
 		u.ws.Close()
 	}()

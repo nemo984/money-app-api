@@ -2,7 +2,6 @@ package main
 
 import (
 	"database/sql"
-	"fmt"
 	"log"
 	"os"
 
@@ -30,6 +29,5 @@ func main() {
 	hub := notification.NewHub()
 	s := handler.NewServer(service, hub)
 
-	go hub.Run()
-	log.Fatal(s.Start(fmt.Sprintf(":%s", port)))
+	log.Fatal(s.Start(":" + port))
 }
