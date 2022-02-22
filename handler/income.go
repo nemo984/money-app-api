@@ -93,7 +93,7 @@ func (s *Server) createIncome(c *gin.Context) {
 	userPayload := c.MustGet(AuthorizationPayload).(service.JWTClaims)
 	var req createIncomeRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, errorResponse(err))
+		handleValidationError(c, &req, err)
 		return
 	}
 
@@ -137,7 +137,7 @@ func (s *Server) deleteIncome(c *gin.Context) {
 	userPayload := c.MustGet(AuthorizationPayload).(service.JWTClaims)
 	var uri deleteIncomeURI
 	if err := c.ShouldBindUri(&uri); err != nil {
-		c.JSON(http.StatusBadRequest, errorResponse(err))
+		handleValidationError(c, &uri, err)
 		return
 	}
 

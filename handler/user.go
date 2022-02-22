@@ -57,10 +57,10 @@ type tokenResponse struct {
 func (s *Server) createUserToken(c *gin.Context) {
 	var req usernamePasswordRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, errorResponse(err))
+		handleValidationError(c, &req, err)
 		return
 	}
-
+	
 	token, err := s.service.LoginUser(c, req.Username, req.Password)
 	if err != nil {
 		handleError(c, err)
@@ -80,7 +80,7 @@ func (s *Server) createUserToken(c *gin.Context) {
 func (s *Server) createUser(c *gin.Context) {
 	var req usernamePasswordRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, errorResponse(err))
+		handleValidationError(c, &req, err)
 		return
 	}
 
@@ -146,7 +146,7 @@ func (s *Server) updateUser(c *gin.Context) {
 	userPayload := c.MustGet(AuthorizationPayload).(service.JWTClaims)
 	var req updateUserRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, errorResponse(err))
+		handleValidationError(c, &req, err)
 		return
 	}
 

@@ -89,7 +89,7 @@ func (s *Server) createBudget(c *gin.Context) {
 	userPayload := c.MustGet(AuthorizationPayload).(service.JWTClaims)
 	var req createBudgetRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusUnprocessableEntity, errorResponse(err))
+		handleValidationError(c, &req, err)
 		return
 	}
 
@@ -132,7 +132,7 @@ func (s *Server) deleteBudget(c *gin.Context) {
 	userPayload := c.MustGet(AuthorizationPayload).(service.JWTClaims)
 	var uri deleteBudgetURI
 	if err := c.ShouldBindUri(&uri); err != nil {
-		handleError(c, err)
+		handleValidationError(c, &uri, err)
 		return
 	}
 

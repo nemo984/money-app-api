@@ -91,7 +91,7 @@ func (s *Server) createExpense(c *gin.Context) {
 	userPayload := c.MustGet(AuthorizationPayload).(service.JWTClaims)
 	var req createExpenseRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, errorResponse(err))
+		handleValidationError(c, &req, err)
 		return
 	}
 
@@ -135,7 +135,7 @@ func (s *Server) deleteExpense(c *gin.Context) {
 	userPayload := c.MustGet(AuthorizationPayload).(service.JWTClaims)
 	var uri deleteExpenseURI
 	if err := c.ShouldBindUri(&uri); err != nil {
-		handleError(c, err)
+		handleValidationError(c, &uri, err)
 		return
 	}
 

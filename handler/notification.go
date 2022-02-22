@@ -21,7 +21,7 @@ var upgrader = websocket.Upgrader{
 type notificationWSToken struct {
 	// Auth token for the user
 	// required: true
-	Token string `json:"token"`
+	Token string `json:"token" form:"token"`
 }
 
 // swagger:route GET /notifications-ws Notifications listenNotifications
@@ -30,9 +30,15 @@ type notificationWSToken struct {
 // responses:
 //  200: notificationResponse
 func (s *Server) wsNotificationHandler(c *gin.Context) {
-	claims, err := s.service.VerifyToken(c, c.Query("token"))
+	var query notificationWSToken
+	if err := c.ShouldBindQuery(&query); err != nil {
+		handleValidationError(c, &query, err)
+		return
+	}
+
+	claims, err := s.service.VerifyToken(c, query.Token)
 	if err != nil {
-		err := errors.New("missing or invalid jwt token")
+		err := errors.New("invalid jwt token")
 		c.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
@@ -106,7 +112,7 @@ func (s *Server) updateNotification(c *gin.Context) {
 	userPayload := c.MustGet(AuthorizationPayload).(service.JWTClaims)
 	var req notificationURI
 	if err := c.ShouldBindUri(&req); err != nil {
-		handleError(c, err)
+		handleValidationError(c, &req, err)
 		return
 	}
 
