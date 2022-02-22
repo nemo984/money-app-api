@@ -18,7 +18,7 @@ type Server struct {
 }
 
 type NotificationHub interface {
-	Run() 
+	Run()
 	Notify(userID int32, notification db.Notification)
 	Register(user *notification.User)
 	Unregister(user *notification.User)

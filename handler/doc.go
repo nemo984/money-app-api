@@ -25,3 +25,23 @@
 //
 // swagger:meta
 package handler
+
+// swagger:response genericError
+type genericError struct {
+	// in: body
+	Body struct {
+		Error string `json:"error,omitempty"`
+	}
+}
+
+// Username is already taken
+// swagger:response usernameTakenError
+type usernameTakenError struct {
+	genericError
+}
+
+// Username not found or incorrect password
+// swagger:response userLoginError
+type userLoginError struct {
+	genericError
+}

@@ -31,6 +31,7 @@ func (u *User) write(mt int, payload []byte) error {
 func (u *User) Listen() {
 	log.Printf("%v user is listening for message\n", u)
 	defer func() {
+		log.Printf("%v user stopped listening for message\n", u)
 		u.ws.Close()
 	}()
 	for {

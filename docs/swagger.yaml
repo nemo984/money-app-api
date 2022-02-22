@@ -661,6 +661,8 @@ paths:
       responses:
         "200":
           $ref: '#/responses/tokenResponse'
+        "401":
+          $ref: '#/responses/userLoginError'
       tags:
       - Users
   /users:
@@ -678,6 +680,8 @@ paths:
       responses:
         "200":
           $ref: '#/responses/userResponse'
+        "409":
+          $ref: '#/responses/usernameTakenError'
       tags:
       - Users
 produces:
@@ -713,6 +717,14 @@ responses:
       items:
         $ref: '#/definitions/Expense'
       type: array
+  genericError:
+    description: ""
+    schema:
+      properties:
+        error:
+          type: string
+          x-go-name: Error
+      type: object
   incomeResponse:
     description: Income
     headers:
@@ -753,12 +765,28 @@ responses:
           type: string
           x-go-name: Token
       type: object
+  userLoginError:
+    description: Username not found or incorrect password
+    schema:
+      properties:
+        error:
+          type: string
+          x-go-name: Error
+      type: object
   userResponse:
     description: User
     headers:
       Body: {}
     schema:
       $ref: '#/definitions/User'
+  usernameTakenError:
+    description: Username is already taken
+    schema:
+      properties:
+        error:
+          type: string
+          x-go-name: Error
+      type: object
 schemes:
 - http
 - ws

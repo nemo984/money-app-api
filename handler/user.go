@@ -53,6 +53,7 @@ type tokenResponse struct {
 // Returns an auth token for the user
 // responses:
 //  200: tokenResponse
+//  401: userLoginError
 func (s *Server) createUserToken(c *gin.Context) {
 	var req usernamePasswordRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -75,6 +76,7 @@ func (s *Server) createUserToken(c *gin.Context) {
 // Returns the created user
 // responses:
 //  200: userResponse
+//  409: usernameTakenError
 func (s *Server) createUser(c *gin.Context) {
 	var req usernamePasswordRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
