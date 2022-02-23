@@ -50,6 +50,21 @@ func (mr *MockQuerierMockRecorder) CreateBudget(arg0, arg1 interface{}) *gomock.
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateBudget", reflect.TypeOf((*MockQuerier)(nil).CreateBudget), arg0, arg1)
 }
 
+// CreateCategory mocks base method.
+func (m *MockQuerier) CreateCategory(arg0 context.Context, arg1 string) (db.Category, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CreateCategory", arg0, arg1)
+	ret0, _ := ret[0].(db.Category)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CreateCategory indicates an expected call of CreateCategory.
+func (mr *MockQuerierMockRecorder) CreateCategory(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateCategory", reflect.TypeOf((*MockQuerier)(nil).CreateCategory), arg0, arg1)
+}
+
 // CreateExpense mocks base method.
 func (m *MockQuerier) CreateExpense(arg0 context.Context, arg1 db.CreateExpenseParams) (db.Expense, error) {
 	m.ctrl.T.Helper()
@@ -78,6 +93,21 @@ func (m *MockQuerier) CreateIncome(arg0 context.Context, arg1 db.CreateIncomePar
 func (mr *MockQuerierMockRecorder) CreateIncome(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateIncome", reflect.TypeOf((*MockQuerier)(nil).CreateIncome), arg0, arg1)
+}
+
+// CreateIncomeType mocks base method.
+func (m *MockQuerier) CreateIncomeType(arg0 context.Context, arg1 string) (db.IncomeType, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CreateIncomeType", arg0, arg1)
+	ret0, _ := ret[0].(db.IncomeType)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CreateIncomeType indicates an expected call of CreateIncomeType.
+func (mr *MockQuerierMockRecorder) CreateIncomeType(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateIncomeType", reflect.TypeOf((*MockQuerier)(nil).CreateIncomeType), arg0, arg1)
 }
 
 // CreateNotification mocks base method.
@@ -124,6 +154,20 @@ func (mr *MockQuerierMockRecorder) DeleteBudget(arg0, arg1 interface{}) *gomock.
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteBudget", reflect.TypeOf((*MockQuerier)(nil).DeleteBudget), arg0, arg1)
 }
 
+// DeleteCategory mocks base method.
+func (m *MockQuerier) DeleteCategory(arg0 context.Context, arg1 int32) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DeleteCategory", arg0, arg1)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DeleteCategory indicates an expected call of DeleteCategory.
+func (mr *MockQuerierMockRecorder) DeleteCategory(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteCategory", reflect.TypeOf((*MockQuerier)(nil).DeleteCategory), arg0, arg1)
+}
+
 // DeleteExpense mocks base method.
 func (m *MockQuerier) DeleteExpense(arg0 context.Context, arg1 int32) error {
 	m.ctrl.T.Helper()
@@ -152,6 +196,20 @@ func (mr *MockQuerierMockRecorder) DeleteIncome(arg0, arg1 interface{}) *gomock.
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteIncome", reflect.TypeOf((*MockQuerier)(nil).DeleteIncome), arg0, arg1)
 }
 
+// DeleteIncomeType mocks base method.
+func (m *MockQuerier) DeleteIncomeType(arg0 context.Context, arg1 int32) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DeleteIncomeType", arg0, arg1)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DeleteIncomeType indicates an expected call of DeleteIncomeType.
+func (mr *MockQuerierMockRecorder) DeleteIncomeType(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteIncomeType", reflect.TypeOf((*MockQuerier)(nil).DeleteIncomeType), arg0, arg1)
+}
+
 // DeleteNotification mocks base method.
 func (m *MockQuerier) DeleteNotification(arg0 context.Context, arg1 int32) error {
 	m.ctrl.T.Helper()
@@ -167,7 +225,7 @@ func (mr *MockQuerierMockRecorder) DeleteNotification(arg0, arg1 interface{}) *g
 }
 
 // DeleteUser mocks base method.
-func (m *MockQuerier) DeleteUser(arg0 context.Context, arg1 string) error {
+func (m *MockQuerier) DeleteUser(arg0 context.Context, arg1 int32) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DeleteUser", arg0, arg1)
 	ret0, _ := ret[0].(error)
@@ -178,6 +236,21 @@ func (m *MockQuerier) DeleteUser(arg0 context.Context, arg1 string) error {
 func (mr *MockQuerierMockRecorder) DeleteUser(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteUser", reflect.TypeOf((*MockQuerier)(nil).DeleteUser), arg0, arg1)
+}
+
+// GetBudget mocks base method.
+func (m *MockQuerier) GetBudget(arg0 context.Context, arg1 int32) (db.Budget, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetBudget", arg0, arg1)
+	ret0, _ := ret[0].(db.Budget)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetBudget indicates an expected call of GetBudget.
+func (mr *MockQuerierMockRecorder) GetBudget(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetBudget", reflect.TypeOf((*MockQuerier)(nil).GetBudget), arg0, arg1)
 }
 
 // GetBudgets mocks base method.
@@ -195,6 +268,36 @@ func (mr *MockQuerierMockRecorder) GetBudgets(arg0, arg1 interface{}) *gomock.Ca
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetBudgets", reflect.TypeOf((*MockQuerier)(nil).GetBudgets), arg0, arg1)
 }
 
+// GetCategories mocks base method.
+func (m *MockQuerier) GetCategories(arg0 context.Context) ([]db.Category, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetCategories", arg0)
+	ret0, _ := ret[0].([]db.Category)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetCategories indicates an expected call of GetCategories.
+func (mr *MockQuerierMockRecorder) GetCategories(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetCategories", reflect.TypeOf((*MockQuerier)(nil).GetCategories), arg0)
+}
+
+// GetExpense mocks base method.
+func (m *MockQuerier) GetExpense(arg0 context.Context, arg1 int32) (db.Expense, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetExpense", arg0, arg1)
+	ret0, _ := ret[0].(db.Expense)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetExpense indicates an expected call of GetExpense.
+func (mr *MockQuerierMockRecorder) GetExpense(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetExpense", reflect.TypeOf((*MockQuerier)(nil).GetExpense), arg0, arg1)
+}
+
 // GetExpenses mocks base method.
 func (m *MockQuerier) GetExpenses(arg0 context.Context, arg1 int32) ([]db.Expense, error) {
 	m.ctrl.T.Helper()
@@ -210,6 +313,36 @@ func (mr *MockQuerierMockRecorder) GetExpenses(arg0, arg1 interface{}) *gomock.C
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetExpenses", reflect.TypeOf((*MockQuerier)(nil).GetExpenses), arg0, arg1)
 }
 
+// GetIncome mocks base method.
+func (m *MockQuerier) GetIncome(arg0 context.Context, arg1 int32) (db.Income, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetIncome", arg0, arg1)
+	ret0, _ := ret[0].(db.Income)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetIncome indicates an expected call of GetIncome.
+func (mr *MockQuerierMockRecorder) GetIncome(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetIncome", reflect.TypeOf((*MockQuerier)(nil).GetIncome), arg0, arg1)
+}
+
+// GetIncomeTypes mocks base method.
+func (m *MockQuerier) GetIncomeTypes(arg0 context.Context) ([]db.IncomeType, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetIncomeTypes", arg0)
+	ret0, _ := ret[0].([]db.IncomeType)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetIncomeTypes indicates an expected call of GetIncomeTypes.
+func (mr *MockQuerierMockRecorder) GetIncomeTypes(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetIncomeTypes", reflect.TypeOf((*MockQuerier)(nil).GetIncomeTypes), arg0)
+}
+
 // GetIncomes mocks base method.
 func (m *MockQuerier) GetIncomes(arg0 context.Context, arg1 int32) ([]db.Income, error) {
 	m.ctrl.T.Helper()
@@ -223,6 +356,21 @@ func (m *MockQuerier) GetIncomes(arg0 context.Context, arg1 int32) ([]db.Income,
 func (mr *MockQuerierMockRecorder) GetIncomes(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetIncomes", reflect.TypeOf((*MockQuerier)(nil).GetIncomes), arg0, arg1)
+}
+
+// GetNotification mocks base method.
+func (m *MockQuerier) GetNotification(arg0 context.Context, arg1 int32) (db.Notification, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetNotification", arg0, arg1)
+	ret0, _ := ret[0].(db.Notification)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetNotification indicates an expected call of GetNotification.
+func (mr *MockQuerierMockRecorder) GetNotification(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetNotification", reflect.TypeOf((*MockQuerier)(nil).GetNotification), arg0, arg1)
 }
 
 // GetNotifications mocks base method.
@@ -255,6 +403,21 @@ func (mr *MockQuerierMockRecorder) GetUser(arg0, arg1 interface{}) *gomock.Call 
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetUser", reflect.TypeOf((*MockQuerier)(nil).GetUser), arg0, arg1)
 }
 
+// GetUserByID mocks base method.
+func (m *MockQuerier) GetUserByID(arg0 context.Context, arg1 int32) (db.User, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetUserByID", arg0, arg1)
+	ret0, _ := ret[0].(db.User)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetUserByID indicates an expected call of GetUserByID.
+func (mr *MockQuerierMockRecorder) GetUserByID(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetUserByID", reflect.TypeOf((*MockQuerier)(nil).GetUserByID), arg0, arg1)
+}
+
 // UpdateBudget mocks base method.
 func (m *MockQuerier) UpdateBudget(arg0 context.Context, arg1 db.UpdateBudgetParams) error {
 	m.ctrl.T.Helper()
@@ -284,6 +447,21 @@ func (mr *MockQuerierMockRecorder) UpdateNotification(arg0, arg1 interface{}) *g
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateNotification", reflect.TypeOf((*MockQuerier)(nil).UpdateNotification), arg0, arg1)
 }
 
+// UpdateNotifications mocks base method.
+func (m *MockQuerier) UpdateNotifications(arg0 context.Context, arg1 db.UpdateNotificationsParams) ([]db.Notification, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateNotifications", arg0, arg1)
+	ret0, _ := ret[0].([]db.Notification)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// UpdateNotifications indicates an expected call of UpdateNotifications.
+func (mr *MockQuerierMockRecorder) UpdateNotifications(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateNotifications", reflect.TypeOf((*MockQuerier)(nil).UpdateNotifications), arg0, arg1)
+}
+
 // UpdateUser mocks base method.
 func (m *MockQuerier) UpdateUser(arg0 context.Context, arg1 db.UpdateUserParams) (db.User, error) {
 	m.ctrl.T.Helper()
@@ -297,4 +475,19 @@ func (m *MockQuerier) UpdateUser(arg0 context.Context, arg1 db.UpdateUserParams)
 func (mr *MockQuerierMockRecorder) UpdateUser(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateUser", reflect.TypeOf((*MockQuerier)(nil).UpdateUser), arg0, arg1)
+}
+
+// UpdateUserPicture mocks base method.
+func (m *MockQuerier) UpdateUserPicture(arg0 context.Context, arg1 db.UpdateUserPictureParams) (db.User, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateUserPicture", arg0, arg1)
+	ret0, _ := ret[0].(db.User)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// UpdateUserPicture indicates an expected call of UpdateUserPicture.
+func (mr *MockQuerierMockRecorder) UpdateUserPicture(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateUserPicture", reflect.TypeOf((*MockQuerier)(nil).UpdateUserPicture), arg0, arg1)
 }

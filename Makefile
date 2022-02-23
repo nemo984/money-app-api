@@ -12,6 +12,7 @@ sqlc:
 
 mockgen:
 	mockgen -destination db/mock/querier.go github.com/nemo984/money-app-api/db/sqlc Querier
+	mockgen -destination service/mock/service.go github.com/nemo984/money-app-api/service Service
 
 test:
 	go test -v -cover ./...
