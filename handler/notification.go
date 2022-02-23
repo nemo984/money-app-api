@@ -29,7 +29,7 @@ type notificationWSToken struct {
 // Schemes: ws
 // responses:
 //  200: notificationResponse
-func (s *Server) wsNotificationHandler(c *gin.Context) {
+func (s *Server) WSNotificationHandler(c *gin.Context) {
 	var query notificationWSToken
 	if err := c.ShouldBindQuery(&query); err != nil {
 		handleValidationError(c, &query, err)

@@ -60,7 +60,7 @@ func (s *Server) createUserToken(c *gin.Context) {
 		handleValidationError(c, &req, err)
 		return
 	}
-	
+
 	token, err := s.service.LoginUser(c, req.Username, req.Password)
 	if err != nil {
 		handleError(c, err)

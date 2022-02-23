@@ -48,7 +48,7 @@ func NewServer(service service.Service, hub NotificationHub) *Server {
 		users.POST("", server.createUser)
 	}
 
-	apiRoute.GET("/notifications-ws", server.wsNotificationHandler)
+	apiRoute.GET("/notifications-ws", server.WSNotificationHandler)
 
 	userRoute := apiRoute.Group("/me")
 	userRoute.Use(server.authenticatedToken())
