@@ -43,7 +43,7 @@ func (q *Queries) GetIncomeTypes(ctx context.Context) ([]IncomeType, error) {
 		return nil, err
 	}
 	defer rows.Close()
-	var items []IncomeType
+	items := []IncomeType{}
 	for rows.Next() {
 		var i IncomeType
 		if err := rows.Scan(&i.IncomeTypeID, &i.Name); err != nil {

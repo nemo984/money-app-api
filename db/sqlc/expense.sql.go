@@ -87,7 +87,7 @@ func (q *Queries) GetExpenses(ctx context.Context, userID int32) ([]Expense, err
 		return nil, err
 	}
 	defer rows.Close()
-	var items []Expense
+	items := []Expense{}
 	for rows.Next() {
 		var i Expense
 		if err := rows.Scan(

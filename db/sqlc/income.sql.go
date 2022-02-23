@@ -87,7 +87,7 @@ func (q *Queries) GetIncomes(ctx context.Context, userID int32) ([]Income, error
 		return nil, err
 	}
 	defer rows.Close()
-	var items []Income
+	items := []Income{}
 	for rows.Next() {
 		var i Income
 		if err := rows.Scan(

@@ -85,7 +85,7 @@ func (q *Queries) GetNotifications(ctx context.Context, userID int32) ([]Notific
 		return nil, err
 	}
 	defer rows.Close()
-	var items []Notification
+	items := []Notification{}
 	for rows.Next() {
 		var i Notification
 		if err := rows.Scan(
@@ -155,7 +155,7 @@ func (q *Queries) UpdateNotifications(ctx context.Context, arg UpdateNotificatio
 		return nil, err
 	}
 	defer rows.Close()
-	var items []Notification
+	items := []Notification{}
 	for rows.Next() {
 		var i Notification
 		if err := rows.Scan(

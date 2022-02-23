@@ -83,7 +83,7 @@ func (q *Queries) GetBudgets(ctx context.Context, userID int32) ([]Budget, error
 		return nil, err
 	}
 	defer rows.Close()
-	var items []Budget
+	items := []Budget{}
 	for rows.Next() {
 		var i Budget
 		if err := rows.Scan(

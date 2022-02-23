@@ -43,7 +43,7 @@ func (q *Queries) GetCategories(ctx context.Context) ([]Category, error) {
 		return nil, err
 	}
 	defer rows.Close()
-	var items []Category
+	items := []Category{}
 	for rows.Next() {
 		var i Category
 		if err := rows.Scan(&i.CategoryID, &i.Name); err != nil {
