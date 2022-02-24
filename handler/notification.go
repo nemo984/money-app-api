@@ -1,8 +1,7 @@
 package handler
 
 import (
-	"errors"
-	"log"
+	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -38,15 +37,15 @@ func (s *Server) WSNotificationHandler(c *gin.Context) {
 
 	claims, err := s.service.VerifyToken(c, query.Token)
 	if err != nil {
-		err := errors.New("invalid jwt token")
-		c.JSON(http.StatusBadRequest, errorResponse(err))
+		handleError(c, err)
 		return
 	}
 
 	upgrader.CheckOrigin = func(r *http.Request) bool { return true }
 	ws, err := upgrader.Upgrade(c.Writer, c.Request, nil)
 	if err != nil {
-		log.Println(err)
+		err := fmt.Errorf("handler upgrade error: %w", err)
+		handleError(c, err)
 		return
 	}
 

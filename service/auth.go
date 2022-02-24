@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"errors"
+	"fmt"
 	"net/http"
 	"os"
 
@@ -51,8 +52,15 @@ func (s *service) VerifyToken(ctx context.Context, token string) (JWTClaims, err
 		}
 	}
 
-	if _, err = s.GetUser(ctx, claims.UserID); errors.Is(err, ErrUserNotFound) {
-		return JWTClaims{}, err
+	_, err = s.GetUser(ctx, claims.UserID)
+	if errors.Is(err, ErrUserNotFound) {
+		return JWTClaims{}, ErrUserNotFound
+	}
+	if err != nil {
+		return JWTClaims{}, AppError{
+			StatusCode: http.StatusInternalServerError,
+			Err:        fmt.Errorf("verify token get user error: %w", err),
+		}
 	}
 
 	return *claims, nil
