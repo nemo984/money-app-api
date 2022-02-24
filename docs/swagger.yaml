@@ -163,13 +163,8 @@ definitions:
     x-go-package: database/sql
   User:
     properties:
-      created_at:
-        $ref: '#/definitions/NullTime'
       name:
         $ref: '#/definitions/NullString'
-      password:
-        type: string
-        x-go-name: Password
       profile_url:
         $ref: '#/definitions/NullString'
       user_id:
@@ -177,10 +172,11 @@ definitions:
         type: integer
         x-go-name: UserID
       username:
+        example: apodqila
         type: string
         x-go-name: Username
     type: object
-    x-go-package: github.com/nemo984/money-app-api/db/sqlc
+    x-go-package: github.com/nemo984/money-app-api/handler
   createBudgetRequest:
     properties:
       amount:
@@ -297,9 +293,6 @@ definitions:
       password:
         type: string
         x-go-name: Password
-      profile_url:
-        type: string
-        x-go-name: ProfileURL
       username:
         type: string
         x-go-name: Username

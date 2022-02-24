@@ -35,7 +35,7 @@ func NewServer(service service.Service, hub NotificationHub) *Server {
 	opts := middleware.RedocOpts{SpecURL: "/swagger.yaml", Title: "Money App API Documentation"}
 	sh := middleware.Redoc(opts, nil)
 	router.StaticFile("/swagger.yaml", "./docs/swagger.yaml")
-	router.GET("/api", gin.WrapH(sh))
+	router.GET("/docs", gin.WrapH(sh))
 
 	apiRoute.StaticFS("/images/user-profile-pics", util.Fs{Dir: http.Dir("./images/user-profile-pics")})
 

@@ -18,7 +18,16 @@ import (
 // User
 // swagger:response userResponse
 type userResponse struct {
-	Body db.User
+	Body User
+}
+
+type User struct {
+	UserID int32 `json:"user_id"`
+	// example: apodqila
+	Username string `json:"username"`
+	// example: John Smith
+	Name       sql.NullString `json:"name"`
+	ProfileUrl sql.NullString `json:"profile_url"`
 }
 
 // swagger:parameters loginUser createUser
@@ -93,7 +102,12 @@ func (s *Server) createUser(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusCreated, user)
+	c.JSON(http.StatusCreated, User{
+		UserID:     user.UserID,
+		Username:   user.Username,
+		Name:       user.Name,
+		ProfileUrl: user.ProfileUrl,
+	})
 }
 
 // swagger:route GET /me Users getUser
@@ -113,7 +127,12 @@ func (s *Server) getUser(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, user)
+	c.JSON(http.StatusOK, User{
+		UserID:     user.UserID,
+		Username:   user.Username,
+		Name:       user.Name,
+		ProfileUrl: user.ProfileUrl,
+	})
 }
 
 // swagger:parameters updateUser
@@ -130,7 +149,6 @@ type updateUserRequest struct {
 	Username   string `json:"username"`
 	Name       string `json:"name"`
 	Password   string `json:"password"`
-	ProfileURL string `json:"profile_url"`
 }
 
 // swagger:route PATCH /me Users updateUser
@@ -161,7 +179,12 @@ func (s *Server) updateUser(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, user)
+	c.JSON(http.StatusOK, User{
+		UserID:     user.UserID,
+		Username:   user.Username,
+		Name:       user.Name,
+		ProfileUrl: user.ProfileUrl,
+	})
 }
 
 const (
@@ -238,7 +261,12 @@ func (s *Server) uploadProfilePicture(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, user)
+	c.JSON(http.StatusOK, User{
+		UserID:     user.UserID,
+		Username:   user.Username,
+		Name:       user.Name,
+		ProfileUrl: user.ProfileUrl,
+	})
 }
 
 // swagger:route DELETE /me Users deleteUser
