@@ -1,0 +1,6 @@
+data
+.vscode
+.gitignore
+.env
+Makefile
+sqlc.yaml

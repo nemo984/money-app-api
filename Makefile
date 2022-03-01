@@ -4,6 +4,9 @@ up:
 down:
 	docker-compose down
 
+dbup:
+	docker-compose up db -d
+
 db:
 	docker exec -it money-app-api_db_1 psql -U postgres 
 

@@ -146,9 +146,9 @@ type UpdateUserRequest struct {
 
 // swagger:model
 type updateUserRequest struct {
-	Username   string `json:"username"`
-	Name       string `json:"name"`
-	Password   string `json:"password"`
+	Username string `json:"username"`
+	Name     string `json:"name"`
+	Password string `json:"password"`
 }
 
 // swagger:route PATCH /me Users updateUser
