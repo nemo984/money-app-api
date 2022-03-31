@@ -33,15 +33,14 @@ type incomeResponse struct {
 //
 // responses:
 //  200: incomesResponse
-func (h *handler) getIncomes(c *gin.Context) {
+func (h *handler) getIncomes(c *gin.Context) (interface{}, int, error) {
 	userPayload := c.MustGet(AuthorizationPayload).(service.JWTClaims)
 	incomes, err := h.service.GetIncomes(c, userPayload.UserID)
 	if err != nil {
-		handleError(c, err)
-		return
+		return nil, 0, err
 	}
 
-	c.JSON(http.StatusOK, incomes)
+	return incomes, http.StatusOK, nil
 }
 
 // swagger:parameters createIncome
@@ -89,12 +88,12 @@ type createIncomeRequest struct {
 // responses:
 //  201: incomeResponse
 //  422: validationError
-func (h *handler) createIncome(c *gin.Context) {
+func (h *handler) createIncome(c *gin.Context) (interface{}, int, error) {
 	userPayload := c.MustGet(AuthorizationPayload).(service.JWTClaims)
 	var req createIncomeRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
-		handleValidationError(c, &req, err)
-		return
+		err := validationErrors(&req, err)
+		return nil, 0, err
 	}
 
 	args := db.CreateIncomeParams{
@@ -109,11 +108,10 @@ func (h *handler) createIncome(c *gin.Context) {
 	}
 	income, err := h.service.CreateIncome(c, args)
 	if err != nil {
-		handleError(c, err)
-		return
+		return nil, 0, err
 	}
 
-	c.JSON(http.StatusCreated, income)
+	return income, http.StatusCreated, nil
 }
 
 // swagger:parameters deleteIncome
@@ -133,20 +131,19 @@ type deleteIncomeURI struct {
 //
 // responses:
 //  204: noContent
-func (h *handler) deleteIncome(c *gin.Context) {
+func (h *handler) deleteIncome(c *gin.Context) (interface{}, int, error) {
 	userPayload := c.MustGet(AuthorizationPayload).(service.JWTClaims)
 	var uri deleteIncomeURI
 	if err := c.ShouldBindUri(&uri); err != nil {
-		handleValidationError(c, &uri, err)
-		return
+		err := validationErrors(&uri, err)
+		return nil, 0, err
 	}
 
 	if err := h.service.DeleteIncome(c, userPayload.UserID, uri.IncomeID); err != nil {
-		handleError(c, err)
-		return
+		return nil, 0, err
 	}
 
-	c.Status(http.StatusNoContent)
+	return "", http.StatusNoContent, nil
 }
 
 // A list of income types
@@ -161,12 +158,11 @@ type incomeTypesResponse struct {
 // List the available income types
 // responses:
 //  200: incomeTypesResponse
-func (h *handler) getIncomeTypes(c *gin.Context) {
+func (h *handler) getIncomeTypes(c *gin.Context) (interface{}, int, error) {
 	types, err := h.service.GetIncomeTypes(c)
 	if err != nil {
-		handleError(c, err)
-		return
+		return nil, 0, err
 	}
 
-	c.JSON(http.StatusOK, types)
+	return types, http.StatusOK, nil
 }

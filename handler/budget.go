@@ -33,15 +33,14 @@ type budgetResponse struct {
 //
 // responses:
 //  200: budgetsResponse
-func (h *handler) getBudgets(c *gin.Context) {
+func (h *handler) getBudgets(c *gin.Context) (interface{}, int, error) {
 	userPayload := c.MustGet(AuthorizationPayload).(service.JWTClaims)
 	budgets, err := h.service.GetBudgets(c, userPayload.UserID)
 	if err != nil {
-		handleError(c, err)
-		return
+		return nil, 0, err
 	}
 
-	c.JSON(http.StatusOK, budgets)
+	return budgets, http.StatusOK, nil
 }
 
 // swagger:parameters createBudget
@@ -85,12 +84,12 @@ type createBudgetRequest struct {
 // responses:
 //  201: budgetResponse
 //  422: validationError
-func (h *handler) createBudget(c *gin.Context) {
+func (h *handler) createBudget(c *gin.Context) (interface{}, int, error) {
 	userPayload := c.MustGet(AuthorizationPayload).(service.JWTClaims)
 	var req createBudgetRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
-		handleValidationError(c, &req, err)
-		return
+		err := validationErrors(&req, err)
+		return nil, 0, err
 	}
 
 	args := db.CreateBudgetParams{
@@ -104,11 +103,10 @@ func (h *handler) createBudget(c *gin.Context) {
 	}
 	budget, err := h.service.CreateBudget(c, args)
 	if err != nil {
-		handleError(c, err)
-		return
+		return nil, 0, err
 	}
 
-	c.JSON(http.StatusCreated, budget)
+	return budget, http.StatusCreated, nil
 }
 
 // swagger:parameters deleteBudget
@@ -128,18 +126,17 @@ type deleteBudgetURI struct {
 //
 // responses:
 //  204: noContent
-func (h *handler) deleteBudget(c *gin.Context) {
+func (h *handler) deleteBudget(c *gin.Context) (interface{}, int, error) {
 	userPayload := c.MustGet(AuthorizationPayload).(service.JWTClaims)
 	var uri deleteBudgetURI
 	if err := c.ShouldBindUri(&uri); err != nil {
-		handleValidationError(c, &uri, err)
-		return
+		err := validationErrors(&uri, err)
+		return nil, 0, err
 	}
 
 	if err := h.service.DeleteBudget(c, userPayload.UserID, uri.BudgetID); err != nil {
-		handleError(c, err)
-		return
+		return nil, 0, err
 	}
 
-	c.Status(http.StatusNoContent)
+	return "", http.StatusNoContent, nil
 }

@@ -33,15 +33,14 @@ type expenseResponse struct {
 //
 // responses:
 //  200: expensesResponse
-func (h *handler) getExpenses(c *gin.Context) {
+func (h *handler) getExpenses(c *gin.Context) (interface{}, int, error) {
 	userPayload := c.MustGet(AuthorizationPayload).(service.JWTClaims)
 	expenses, err := h.service.GetExpenses(c, userPayload.UserID)
 	if err != nil {
-		handleError(c, err)
-		return
+		return nil, 0, err
 	}
 
-	c.JSON(http.StatusOK, expenses)
+	return expenses, http.StatusOK, nil
 }
 
 // swagger:parameters createExpense
@@ -87,12 +86,12 @@ type createExpenseRequest struct {
 // responses:
 //  201: expenseResponse
 //  422: validationError
-func (h *handler) createExpense(c *gin.Context) {
+func (h *handler) createExpense(c *gin.Context) (interface{}, int, error) {
 	userPayload := c.MustGet(AuthorizationPayload).(service.JWTClaims)
 	var req createExpenseRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
-		handleValidationError(c, &req, err)
-		return
+		err := validationErrors(&req, err)
+		return nil, 0, err
 	}
 
 	args := db.CreateExpenseParams{
@@ -107,11 +106,10 @@ func (h *handler) createExpense(c *gin.Context) {
 	}
 	expense, err := h.service.CreateExpense(c, args)
 	if err != nil {
-		handleError(c, err)
-		return
+		return nil, 0, err
 	}
 
-	c.JSON(http.StatusCreated, expense)
+	return expense, http.StatusCreated, nil
 }
 
 // swagger:parameters deleteExpense
@@ -131,18 +129,17 @@ type deleteExpenseURI struct {
 //
 // responses:
 //  204: noContent
-func (h *handler) deleteExpense(c *gin.Context) {
+func (h *handler) deleteExpense(c *gin.Context) (interface{}, int, error) {
 	userPayload := c.MustGet(AuthorizationPayload).(service.JWTClaims)
 	var uri deleteExpenseURI
 	if err := c.ShouldBindUri(&uri); err != nil {
-		handleValidationError(c, &uri, err)
-		return
+		err := validationErrors(&uri, err)
+		return nil, 0, err
 	}
 
 	if err := h.service.DeleteExpense(c, userPayload.UserID, uri.ExpenseID); err != nil {
-		handleError(c, err)
-		return
+		return nil, 0, err
 	}
 
-	c.Status(http.StatusNoContent)
+	return "", http.StatusNoContent, nil
 }

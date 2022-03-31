@@ -19,12 +19,11 @@ type categoriesResponse struct {
 // Returns a list of categories
 // responses:
 //  200: categoriesResponse
-func (h *handler) getCategories(c *gin.Context) {
+func (h *handler) getCategories(c *gin.Context) (interface{}, int, error) {
 	categories, err := h.service.GetCategories(c)
 	if err != nil {
-		handleError(c, err)
-		return
+		return nil, 0, err
 	}
 
-	c.JSON(http.StatusOK, categories)
+	return categories, http.StatusOK, nil
 }

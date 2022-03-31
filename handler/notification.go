@@ -28,30 +28,29 @@ type notificationWSToken struct {
 // Schemes: ws
 // responses:
 //  200: notificationResponse
-func (h *handler) WSNotificationHandler(c *gin.Context) {
+func (h *handler) WSNotificationHandler(c *gin.Context) (interface{}, int, error) {
 	var query notificationWSToken
 	if err := c.ShouldBindQuery(&query); err != nil {
-		handleValidationError(c, &query, err)
-		return
+		err := validationErrors(&query, err)
+		return nil, 0, err
 	}
 
 	claims, err := h.service.VerifyToken(c, query.Token)
 	if err != nil {
-		handleError(c, err)
-		return
+		return nil, 0, err
 	}
 
 	upgrader.CheckOrigin = func(r *http.Request) bool { return true }
 	ws, err := upgrader.Upgrade(c.Writer, c.Request, nil)
 	if err != nil {
 		err := fmt.Errorf("handler upgrade error: %w", err)
-		handleError(c, err)
-		return
+		return nil, 0, err
 	}
 
 	user := notification.NewUser(ws, claims.UserID)
 	h.hub.Register(user)
 	defer h.hub.Unregister(user)
+	return "", http.StatusNoContent, nil
 }
 
 // A list of notifications
@@ -77,15 +76,14 @@ type notificationResponse struct {
 //
 // responses:
 //  200: notificationsResponse
-func (h *handler) getNotifications(c *gin.Context) {
+func (h *handler) getNotifications(c *gin.Context) (interface{}, int, error) {
 	userPayload := c.MustGet(AuthorizationPayload).(service.JWTClaims)
 	notifications, err := h.service.GetNotifications(c, userPayload.UserID)
 	if err != nil {
-		handleError(c, err)
-		return
+		return nil, 0, err
 	}
 
-	c.JSON(http.StatusOK, notifications)
+	return notifications, http.StatusOK, nil
 }
 
 // swagger:parameters updateNotification
@@ -106,12 +104,12 @@ type notificationURI struct {
 //
 // responses:
 //  200: notificationResponse
-func (h *handler) updateNotification(c *gin.Context) {
+func (h *handler) updateNotification(c *gin.Context) (interface{}, int, error) {
 	userPayload := c.MustGet(AuthorizationPayload).(service.JWTClaims)
 	var req notificationURI
 	if err := c.ShouldBindUri(&req); err != nil {
-		handleValidationError(c, &req, err)
-		return
+		err := validationErrors(&req, err)
+		return nil, 0, err
 	}
 
 	notification, err := h.service.UpdateNotification(c, userPayload.UserID, db.UpdateNotificationParams{
@@ -119,11 +117,10 @@ func (h *handler) updateNotification(c *gin.Context) {
 		Read:           true,
 	})
 	if err != nil {
-		handleError(c, err)
-		return
+		return nil, 0, err
 	}
 
-	c.JSON(http.StatusOK, notification)
+	return notification, http.StatusOK, nil
 }
 
 // swagger:route PATCH /me/notifications Notifications updateNotifications
@@ -135,7 +132,7 @@ func (h *handler) updateNotification(c *gin.Context) {
 //
 // responses:
 //  200: notificationsResponse
-func (h *handler) updateAllNotifications(c *gin.Context) {
+func (h *handler) updateAllNotifications(c *gin.Context) (interface{}, int, error) {
 	userPayload := c.MustGet(AuthorizationPayload).(service.JWTClaims)
 	args := db.UpdateNotificationsParams{
 		UserID: userPayload.UserID,
@@ -144,9 +141,8 @@ func (h *handler) updateAllNotifications(c *gin.Context) {
 
 	notifications, err := h.service.UpdateNotifications(c, args)
 	if err != nil {
-		handleError(c, err)
-		return
+		return nil, 0, err
 	}
 
-	c.JSON(http.StatusOK, notifications)
+	return notifications, http.StatusOK, nil
 }
