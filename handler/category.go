@@ -19,8 +19,8 @@ type categoriesResponse struct {
 // Returns a list of categories
 // responses:
 //  200: categoriesResponse
-func (s *Server) getCategories(c *gin.Context) {
-	categories, err := s.service.GetCategories(c)
+func (h *handler) getCategories(c *gin.Context) {
+	categories, err := h.service.GetCategories(c)
 	if err != nil {
 		handleError(c, err)
 		return

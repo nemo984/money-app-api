@@ -63,14 +63,14 @@ type tokenResponse struct {
 // responses:
 //  200: tokenResponse
 //  401: userLoginError
-func (s *Server) createUserToken(c *gin.Context) {
+func (h *handler) createUserToken(c *gin.Context) {
 	var req usernamePasswordRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		handleValidationError(c, &req, err)
 		return
 	}
 
-	token, err := s.service.LoginUser(c, req.Username, req.Password)
+	token, err := h.service.LoginUser(c, req.Username, req.Password)
 	if err != nil {
 		handleError(c, err)
 		return
@@ -86,14 +86,14 @@ func (s *Server) createUserToken(c *gin.Context) {
 // responses:
 //  200: userResponse
 //  409: usernameTakenError
-func (s *Server) createUser(c *gin.Context) {
+func (h *handler) createUser(c *gin.Context) {
 	var req usernamePasswordRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		handleValidationError(c, &req, err)
 		return
 	}
 
-	user, err := s.service.CreateUser(c, db.CreateUserParams{
+	user, err := h.service.CreateUser(c, db.CreateUserParams{
 		Username: req.Username,
 		Password: req.Password,
 	})
@@ -119,9 +119,9 @@ func (s *Server) createUser(c *gin.Context) {
 //
 // responses:
 //  200: userResponse
-func (s *Server) getUser(c *gin.Context) {
+func (h *handler) getUser(c *gin.Context) {
 	userPayload := c.MustGet(AuthorizationPayload).(service.JWTClaims)
-	user, err := s.service.GetUser(c, userPayload.UserID)
+	user, err := h.service.GetUser(c, userPayload.UserID)
 	if err != nil {
 		handleError(c, err)
 		return
@@ -160,7 +160,7 @@ type updateUserRequest struct {
 //
 // responses:
 //  200: userResponse
-func (s *Server) updateUser(c *gin.Context) {
+func (h *handler) updateUser(c *gin.Context) {
 	userPayload := c.MustGet(AuthorizationPayload).(service.JWTClaims)
 	var req updateUserRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -168,7 +168,7 @@ func (s *Server) updateUser(c *gin.Context) {
 		return
 	}
 
-	user, err := s.service.UpdateUser(c, service.UpdateUserParams{
+	user, err := h.service.UpdateUser(c, service.UpdateUserParams{
 		UserID:   userPayload.UserID,
 		Username: req.Username,
 		Name:     req.Name,
@@ -214,7 +214,7 @@ type uploadReq struct {
 //
 // responses:
 //  200: userResponse
-func (s *Server) uploadProfilePicture(c *gin.Context) {
+func (h *handler) uploadProfilePicture(c *gin.Context) {
 	c.Request.Body = http.MaxBytesReader(c.Writer, c.Request.Body, maxBodyBytes)
 
 	userPayload := c.MustGet(AuthorizationPayload).(service.JWTClaims)
@@ -249,7 +249,7 @@ func (s *Server) uploadProfilePicture(c *gin.Context) {
 		return
 	}
 
-	user, err := s.service.UpdateUserPicture(c, db.UpdateUserPictureParams{
+	user, err := h.service.UpdateUserPicture(c, db.UpdateUserPictureParams{
 		UserID: userPayload.UserID,
 		ProfileUrl: sql.NullString{
 			String: filepath,
@@ -278,9 +278,9 @@ func (s *Server) uploadProfilePicture(c *gin.Context) {
 //
 // responses:
 //  204: noContent
-func (s *Server) deleteUser(c *gin.Context) {
+func (h *handler) deleteUser(c *gin.Context) {
 	userPayload := c.MustGet(AuthorizationPayload).(service.JWTClaims)
-	err := s.service.DeleteUser(c, userPayload.UserID)
+	err := h.service.DeleteUser(c, userPayload.UserID)
 	if err != nil {
 		handleError(c, err)
 		return

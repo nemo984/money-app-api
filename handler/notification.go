@@ -28,14 +28,14 @@ type notificationWSToken struct {
 // Schemes: ws
 // responses:
 //  200: notificationResponse
-func (s *Server) WSNotificationHandler(c *gin.Context) {
+func (h *handler) WSNotificationHandler(c *gin.Context) {
 	var query notificationWSToken
 	if err := c.ShouldBindQuery(&query); err != nil {
 		handleValidationError(c, &query, err)
 		return
 	}
 
-	claims, err := s.service.VerifyToken(c, query.Token)
+	claims, err := h.service.VerifyToken(c, query.Token)
 	if err != nil {
 		handleError(c, err)
 		return
@@ -50,8 +50,8 @@ func (s *Server) WSNotificationHandler(c *gin.Context) {
 	}
 
 	user := notification.NewUser(ws, claims.UserID)
-	s.hub.Register(user)
-	defer s.hub.Unregister(user)
+	h.hub.Register(user)
+	defer h.hub.Unregister(user)
 	user.Listen()
 }
 
@@ -78,9 +78,9 @@ type notificationResponse struct {
 //
 // responses:
 //  200: notificationsResponse
-func (s *Server) getNotifications(c *gin.Context) {
+func (h *handler) getNotifications(c *gin.Context) {
 	userPayload := c.MustGet(AuthorizationPayload).(service.JWTClaims)
-	notifications, err := s.service.GetNotifications(c, userPayload.UserID)
+	notifications, err := h.service.GetNotifications(c, userPayload.UserID)
 	if err != nil {
 		handleError(c, err)
 		return
@@ -107,7 +107,7 @@ type notificationURI struct {
 //
 // responses:
 //  200: notificationResponse
-func (s *Server) updateNotification(c *gin.Context) {
+func (h *handler) updateNotification(c *gin.Context) {
 	userPayload := c.MustGet(AuthorizationPayload).(service.JWTClaims)
 	var req notificationURI
 	if err := c.ShouldBindUri(&req); err != nil {
@@ -115,7 +115,7 @@ func (s *Server) updateNotification(c *gin.Context) {
 		return
 	}
 
-	notification, err := s.service.UpdateNotification(c, userPayload.UserID, db.UpdateNotificationParams{
+	notification, err := h.service.UpdateNotification(c, userPayload.UserID, db.UpdateNotificationParams{
 		NotificationID: req.NotificationID,
 		Read:           true,
 	})
@@ -136,14 +136,14 @@ func (s *Server) updateNotification(c *gin.Context) {
 //
 // responses:
 //  200: notificationsResponse
-func (s *Server) updateAllNotifications(c *gin.Context) {
+func (h *handler) updateAllNotifications(c *gin.Context) {
 	userPayload := c.MustGet(AuthorizationPayload).(service.JWTClaims)
 	args := db.UpdateNotificationsParams{
 		UserID: userPayload.UserID,
 		Read:   true,
 	}
 
-	notifications, err := s.service.UpdateNotifications(c, args)
+	notifications, err := h.service.UpdateNotifications(c, args)
 	if err != nil {
 		handleError(c, err)
 		return

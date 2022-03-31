@@ -39,12 +39,12 @@ type UserInfo struct {
 // Logins with google. The token is set in a cookie named `jwt-token`
 // responses:
 //  307: redirectGoogle
-func (s *Server) GoogleLogin(c *gin.Context) {
+func (h *handler) GoogleLogin(c *gin.Context) {
 	url := googleOauthConfig.AuthCodeURL(oauthStateString)
 	c.Redirect(http.StatusTemporaryRedirect, url)
 }
 
-func (s *Server) GoogleCallback(c *gin.Context) {
+func (h *handler) GoogleCallback(c *gin.Context) {
 	state := c.Query("state")
 	if state != oauthStateString {
 		log.Printf("invalid oauth state, expected '%s', got '%s'\n", oauthStateString, state)
@@ -76,7 +76,7 @@ func (s *Server) GoogleCallback(c *gin.Context) {
 		return
 	}
 	//user is created if doesn't exists
-	user, err := s.service.CreateUser(c, db.CreateUserParams{
+	user, err := h.service.CreateUser(c, db.CreateUserParams{
 		Username: userInfo.Email,
 		Name: sql.NullString{
 			String: userInfo.Name,

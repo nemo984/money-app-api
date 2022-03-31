@@ -33,9 +33,9 @@ type incomeResponse struct {
 //
 // responses:
 //  200: incomesResponse
-func (s *Server) getIncomes(c *gin.Context) {
+func (h *handler) getIncomes(c *gin.Context) {
 	userPayload := c.MustGet(AuthorizationPayload).(service.JWTClaims)
-	incomes, err := s.service.GetIncomes(c, userPayload.UserID)
+	incomes, err := h.service.GetIncomes(c, userPayload.UserID)
 	if err != nil {
 		handleError(c, err)
 		return
@@ -89,7 +89,7 @@ type createIncomeRequest struct {
 // responses:
 //  201: incomeResponse
 //  422: validationError
-func (s *Server) createIncome(c *gin.Context) {
+func (h *handler) createIncome(c *gin.Context) {
 	userPayload := c.MustGet(AuthorizationPayload).(service.JWTClaims)
 	var req createIncomeRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -107,7 +107,7 @@ func (s *Server) createIncome(c *gin.Context) {
 		},
 		Frequency: db.DateFrequency(req.Frequency),
 	}
-	income, err := s.service.CreateIncome(c, args)
+	income, err := h.service.CreateIncome(c, args)
 	if err != nil {
 		handleError(c, err)
 		return
@@ -133,7 +133,7 @@ type deleteIncomeURI struct {
 //
 // responses:
 //  204: noContent
-func (s *Server) deleteIncome(c *gin.Context) {
+func (h *handler) deleteIncome(c *gin.Context) {
 	userPayload := c.MustGet(AuthorizationPayload).(service.JWTClaims)
 	var uri deleteIncomeURI
 	if err := c.ShouldBindUri(&uri); err != nil {
@@ -141,7 +141,7 @@ func (s *Server) deleteIncome(c *gin.Context) {
 		return
 	}
 
-	if err := s.service.DeleteIncome(c, userPayload.UserID, uri.IncomeID); err != nil {
+	if err := h.service.DeleteIncome(c, userPayload.UserID, uri.IncomeID); err != nil {
 		handleError(c, err)
 		return
 	}
@@ -161,8 +161,8 @@ type incomeTypesResponse struct {
 // List the available income types
 // responses:
 //  200: incomeTypesResponse
-func (s *Server) getIncomeTypes(c *gin.Context) {
-	types, err := s.service.GetIncomeTypes(c)
+func (h *handler) getIncomeTypes(c *gin.Context) {
+	types, err := h.service.GetIncomeTypes(c)
 	if err != nil {
 		handleError(c, err)
 		return

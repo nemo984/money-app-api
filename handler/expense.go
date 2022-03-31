@@ -33,9 +33,9 @@ type expenseResponse struct {
 //
 // responses:
 //  200: expensesResponse
-func (s *Server) getExpenses(c *gin.Context) {
+func (h *handler) getExpenses(c *gin.Context) {
 	userPayload := c.MustGet(AuthorizationPayload).(service.JWTClaims)
-	expenses, err := s.service.GetExpenses(c, userPayload.UserID)
+	expenses, err := h.service.GetExpenses(c, userPayload.UserID)
 	if err != nil {
 		handleError(c, err)
 		return
@@ -87,7 +87,7 @@ type createExpenseRequest struct {
 // responses:
 //  201: expenseResponse
 //  422: validationError
-func (s *Server) createExpense(c *gin.Context) {
+func (h *handler) createExpense(c *gin.Context) {
 	userPayload := c.MustGet(AuthorizationPayload).(service.JWTClaims)
 	var req createExpenseRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -105,7 +105,7 @@ func (s *Server) createExpense(c *gin.Context) {
 			Valid:  true,
 		},
 	}
-	expense, err := s.service.CreateExpense(c, args)
+	expense, err := h.service.CreateExpense(c, args)
 	if err != nil {
 		handleError(c, err)
 		return
@@ -131,7 +131,7 @@ type deleteExpenseURI struct {
 //
 // responses:
 //  204: noContent
-func (s *Server) deleteExpense(c *gin.Context) {
+func (h *handler) deleteExpense(c *gin.Context) {
 	userPayload := c.MustGet(AuthorizationPayload).(service.JWTClaims)
 	var uri deleteExpenseURI
 	if err := c.ShouldBindUri(&uri); err != nil {
@@ -139,7 +139,7 @@ func (s *Server) deleteExpense(c *gin.Context) {
 		return
 	}
 
-	if err := s.service.DeleteExpense(c, userPayload.UserID, uri.ExpenseID); err != nil {
+	if err := h.service.DeleteExpense(c, userPayload.UserID, uri.ExpenseID); err != nil {
 		handleError(c, err)
 		return
 	}

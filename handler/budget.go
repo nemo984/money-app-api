@@ -33,9 +33,9 @@ type budgetResponse struct {
 //
 // responses:
 //  200: budgetsResponse
-func (s *Server) getBudgets(c *gin.Context) {
+func (h *handler) getBudgets(c *gin.Context) {
 	userPayload := c.MustGet(AuthorizationPayload).(service.JWTClaims)
-	budgets, err := s.service.GetBudgets(c, userPayload.UserID)
+	budgets, err := h.service.GetBudgets(c, userPayload.UserID)
 	if err != nil {
 		handleError(c, err)
 		return
@@ -85,7 +85,7 @@ type createBudgetRequest struct {
 // responses:
 //  201: budgetResponse
 //  422: validationError
-func (s *Server) createBudget(c *gin.Context) {
+func (h *handler) createBudget(c *gin.Context) {
 	userPayload := c.MustGet(AuthorizationPayload).(service.JWTClaims)
 	var req createBudgetRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -102,7 +102,7 @@ func (s *Server) createBudget(c *gin.Context) {
 			Valid: true,
 		},
 	}
-	budget, err := s.service.CreateBudget(c, args)
+	budget, err := h.service.CreateBudget(c, args)
 	if err != nil {
 		handleError(c, err)
 		return
@@ -128,7 +128,7 @@ type deleteBudgetURI struct {
 //
 // responses:
 //  204: noContent
-func (s *Server) deleteBudget(c *gin.Context) {
+func (h *handler) deleteBudget(c *gin.Context) {
 	userPayload := c.MustGet(AuthorizationPayload).(service.JWTClaims)
 	var uri deleteBudgetURI
 	if err := c.ShouldBindUri(&uri); err != nil {
@@ -136,7 +136,7 @@ func (s *Server) deleteBudget(c *gin.Context) {
 		return
 	}
 
-	if err := s.service.DeleteBudget(c, userPayload.UserID, uri.BudgetID); err != nil {
+	if err := h.service.DeleteBudget(c, userPayload.UserID, uri.BudgetID); err != nil {
 		handleError(c, err)
 		return
 	}

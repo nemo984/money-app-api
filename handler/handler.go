@@ -13,7 +13,7 @@ import (
 	"github.com/nemo984/money-app-api/util"
 )
 
-type Server struct {
+type handler struct {
 	hub     NotificationHub
 	service service.Service
 	router  *gin.Engine
@@ -26,8 +26,8 @@ type NotificationHub interface {
 	Unregister(user *notification.User)
 }
 
-func NewServer(service service.Service, hub NotificationHub) *Server {
-	server := &Server{service: service, hub: hub}
+func New(service service.Service, hub NotificationHub) *handler {
+	handler := &handler{service: service, hub: hub}
 	router := gin.Default()
 	apiRoute := router.Group("/api")
 
@@ -39,69 +39,69 @@ func NewServer(service service.Service, hub NotificationHub) *Server {
 
 	apiRoute.StaticFS("/images/user-profile-pics", util.Fs{Dir: http.Dir("./images/user-profile-pics")})
 
-	apiRoute.POST("/token", server.createUserToken)
-	apiRoute.GET("/google-login", server.GoogleLogin)
-	apiRoute.GET("/google-callback", server.GoogleCallback)
+	apiRoute.POST("/token", handler.createUserToken)
+	apiRoute.GET("/google-login", handler.GoogleLogin)
+	apiRoute.GET("/google-callback", handler.GoogleCallback)
 
 	users := apiRoute.Group("/users")
 	{
-		users.POST("", server.createUser)
+		users.POST("", handler.createUser)
 	}
 
-	apiRoute.GET("/notifications-ws", server.WSNotificationHandler)
+	apiRoute.GET("/notifications-ws", handler.WSNotificationHandler)
 
 	userRoute := apiRoute.Group("/me")
-	userRoute.Use(server.authenticatedToken())
+	userRoute.Use(handler.authenticatedToken())
 	{
-		userRoute.GET("", server.getUser)
-		userRoute.PATCH("", server.updateUser)
-		userRoute.DELETE("", server.deleteUser)
-		userRoute.PUT("/picture", server.uploadProfilePicture)
+		userRoute.GET("", handler.getUser)
+		userRoute.PATCH("", handler.updateUser)
+		userRoute.DELETE("", handler.deleteUser)
+		userRoute.PUT("/picture", handler.uploadProfilePicture)
 
 		expensesRoute := userRoute.Group("/expenses")
 		{
-			expensesRoute.GET("", server.getExpenses)
-			expensesRoute.POST("", server.createExpense)
-			expensesRoute.DELETE("/:id", server.deleteExpense)
+			expensesRoute.GET("", handler.getExpenses)
+			expensesRoute.POST("", handler.createExpense)
+			expensesRoute.DELETE("/:id", handler.deleteExpense)
 		}
 
 		budgetsRoute := userRoute.Group("/budgets")
 		{
-			budgetsRoute.GET("", server.getBudgets)
-			budgetsRoute.POST("", server.createBudget)
-			budgetsRoute.DELETE("/:id", server.deleteBudget)
+			budgetsRoute.GET("", handler.getBudgets)
+			budgetsRoute.POST("", handler.createBudget)
+			budgetsRoute.DELETE("/:id", handler.deleteBudget)
 		}
 
 		incomesRoute := userRoute.Group("/incomes")
 		{
-			incomesRoute.GET("", server.getIncomes)
-			incomesRoute.POST("", server.createIncome)
-			incomesRoute.DELETE("/:id", server.deleteIncome)
+			incomesRoute.GET("", handler.getIncomes)
+			incomesRoute.POST("", handler.createIncome)
+			incomesRoute.DELETE("/:id", handler.deleteIncome)
 		}
 
 		notificationsRoute := userRoute.Group("/notifications")
 		{
-			notificationsRoute.GET("", server.getNotifications)
-			notificationsRoute.PATCH("", server.updateAllNotifications)
-			notificationsRoute.PATCH("/:id", server.updateNotification)
+			notificationsRoute.GET("", handler.getNotifications)
+			notificationsRoute.PATCH("", handler.updateAllNotifications)
+			notificationsRoute.PATCH("/:id", handler.updateNotification)
 		}
 	}
 
 	categoriesRoute := apiRoute.Group("/categories")
 	{
-		categoriesRoute.GET("", server.getCategories)
+		categoriesRoute.GET("", handler.getCategories)
 	}
 
 	incomeTypesRoute := apiRoute.Group("/income-types")
 	{
-		incomeTypesRoute.GET("", server.getIncomeTypes)
+		incomeTypesRoute.GET("", handler.getIncomeTypes)
 	}
 
-	server.router = router
-	return server
+	handler.router = router
+	return handler
 }
 
-func (s *Server) Start(addr string) error {
+func (s *handler) Start(addr string) error {
 	go s.hub.Run()
 	return s.router.Run(addr)
 }

@@ -14,11 +14,11 @@ const (
 	JWTTokenCookieKey = "jwt-token"
 
 	authorizationHeader  = "Authorization"
-	authorizationBearer  = "bearer"
+	bearerAuth           = "bearer"
 	AuthorizationPayload = "payload"
 )
 
-func (s *Server) authenticatedToken() gin.HandlerFunc {
+func (h *handler) authenticatedToken() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var jwtToken string
 		//check cookie first
@@ -40,8 +40,8 @@ func (s *Server) authenticatedToken() gin.HandlerFunc {
 			}
 
 			authType := strings.ToLower(fields[0])
-			if authType != authorizationBearer {
-				err := fmt.Errorf("unsupported auth type, must be %s", authorizationBearer)
+			if authType != bearerAuth {
+				err := fmt.Errorf("unsupported auth type, must be %s", bearerAuth)
 				handleAbortError(c, err)
 				return
 			}
@@ -49,7 +49,7 @@ func (s *Server) authenticatedToken() gin.HandlerFunc {
 			jwtToken = fields[1]
 		}
 
-		claims, err := s.service.VerifyToken(c, jwtToken)
+		claims, err := h.service.VerifyToken(c, jwtToken)
 		if err != nil {
 			handleAbortError(c, err)
 			return

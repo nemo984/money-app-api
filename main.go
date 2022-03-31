@@ -27,7 +27,7 @@ func main() {
 	queries := db.New(conn)
 	service := service.NewService(queries)
 	hub := notification.NewHub()
-	s := handler.NewServer(service, hub)
+	s := handler.New(service, hub)
 
 	log.Fatal(s.Start(":" + port))
 }

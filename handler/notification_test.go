@@ -19,7 +19,6 @@ import (
 
 var (
 	hub       *notification.Hub
-	server    *handler.Server
 	URL       = "ws://127.0.0.1:8081/api/notifications-ws"
 	testToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJNYXBDbGFpbXMiOm51bGwsInVzZXJfaWQiOjF9.5_ws3YIck_0n4ayTwO_ufsZJn-nXFk0z5BR76v3UN9A"
 )
@@ -38,9 +37,9 @@ func setUpServer(t *testing.T, userID int32) {
 		AnyTimes()
 
 	hub = notification.NewHub()
-	server = handler.NewServer(mockService, hub)
+	s := handler.New(mockService, hub)
 	go hub.Run()
-	go server.Start(":8081")
+	go s.Start(":8081")
 }
 
 func TestSendNotification(t *testing.T) {
