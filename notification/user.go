@@ -28,7 +28,7 @@ func (u *User) write(mt int, payload []byte) error {
 }
 
 // writePump pumps messages from the hub to the websocket connection.
-func (u *User) Listen() {
+func (u *User) listen() {
 	log.Printf("%v user is listening for message\n", u)
 	defer func() {
 		log.Printf("%v user stopped listening for message\n", u)

@@ -2,20 +2,20 @@ package notification
 
 import (
 	"log"
+	"sync"
 
 	db "github.com/nemo984/money-app-api/db/sqlc"
 )
 
 type Hub struct {
-	users      map[int32]*User
+	usersMap   sync.Map
 	notify     chan db.Notification
 	register   chan *User
 	unregister chan *User
 }
 
-func NewHub() *Hub {
+func New() *Hub {
 	return &Hub{
-		users:      make(map[int32]*User),
 		notify:     make(chan db.Notification),
 		register:   make(chan *User),
 		unregister: make(chan *User),
@@ -29,18 +29,17 @@ func (h *Hub) Run() {
 		select {
 		case user := <-h.register:
 			log.Println("New User connection: ", user)
-			h.users[user.userID] = user
+			h.usersMap.Store(user.userID, user)
 
 		case user := <-h.unregister:
 			log.Println("User unregister: ", user)
-			if _, ok := h.users[user.userID]; ok {
-				delete(h.users, user.userID)
+			if _, ok := h.usersMap.LoadAndDelete(user.userID); ok {
 				close(user.send)
 			}
 
 		case notification := <-h.notify:
-			if _, ok := h.users[notification.UserID]; ok {
-				h.users[notification.UserID].send <- notification
+			if u, ok := h.usersMap.Load(notification.UserID); ok {
+				u.(*User).send <- notification
 			}
 		}
 	}
@@ -52,6 +51,7 @@ func (h *Hub) Notify(userID int32, notification db.Notification) {
 
 func (h *Hub) Register(user *User) {
 	h.register <- user
+	user.listen()
 }
 
 func (h *Hub) Unregister(user *User) {

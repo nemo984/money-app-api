@@ -45,7 +45,7 @@ type service struct {
 	db db.Querier
 }
 
-func NewService(db db.Querier) Service {
+func New(db db.Querier) Service {
 	return &service{db: db}
 }
 

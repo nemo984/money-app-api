@@ -25,8 +25,8 @@ func main() {
 		log.Fatal("Cannot connect to database")
 	}
 	queries := db.New(conn)
-	service := service.NewService(queries)
-	hub := notification.NewHub()
+	service := service.New(queries)
+	hub := notification.New()
 	s := handler.New(service, hub)
 
 	log.Fatal(s.Start(":" + port))

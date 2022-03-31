@@ -36,7 +36,7 @@ func setUpServer(t *testing.T, userID int32) {
 		}, nil).
 		AnyTimes()
 
-	hub = notification.NewHub()
+	hub = notification.New()
 	s := handler.New(mockService, hub)
 	go hub.Run()
 	go s.Start(":8081")

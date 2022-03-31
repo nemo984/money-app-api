@@ -52,7 +52,6 @@ func (h *handler) WSNotificationHandler(c *gin.Context) {
 	user := notification.NewUser(ws, claims.UserID)
 	h.hub.Register(user)
 	defer h.hub.Unregister(user)
-	user.Listen()
 }
 
 // A list of notifications

@@ -22,7 +22,7 @@ func TestMain(m *testing.M) {
 		log.Fatal("Cannot connect to database")
 	}
 	queries := db.New(conn)
-	testService = NewService(queries)
+	testService = New(queries)
 
 	os.Exit(m.Run())
 }
